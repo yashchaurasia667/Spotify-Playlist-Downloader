@@ -1,5 +1,6 @@
 import spotipy
 from spotipy import SpotifyClientCredentials
+import re
 
 with open('./credentials.txt') as f:
     [CLIENT_ID, CLIENT_SECRET] = f.read().split('\n')
@@ -40,11 +41,22 @@ while i<no_of_songs:
         items = tracks['items']
         offset = i+1
     i+=1
-# final_data = list(zip(song_list, artists_list, album_list, release_date_list))
+
+def clean(name):
+    unknowns = re.findall(r"\\x(\S{2})", name)
+    for unknown in unknowns:
+        name = name.replace('\\x'+unknown, '')
+    name = name.replace(name[0:2], '')
+    name = name.replace(name[len(name)-1], '')
+    return name
+
+for i in range(len(song_list)):
+    artists_list[i] = clean(str(artists_list[i].encode('utf-8', errors='replace')))
+    song_list[i] = clean(str(song_list[i].encode('utf-8', errors='replace')))
 
 with open('data.txt', 'w') as f:
     for i in range(len(song_list)):
-        f.write(f'{song_list[i]}\t{album_list[i]}\t{release_date_list[i]}\n')
+        f.write(f'{song_list[i]}\t{artists_list[i]}\t{release_date_list[i]}\n')
 
 with open ('songs.txt', 'w') as f:
     for song in song_list:
