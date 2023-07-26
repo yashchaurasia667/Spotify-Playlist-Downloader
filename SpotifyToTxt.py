@@ -11,7 +11,7 @@ auth_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIEN
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
 # giving playlist link
-playlist_link = "https://open.spotify.com/playlist/4wbOzJLsIUUIGTDOxFd4Dl"
+playlist_link = "-----YOUR SPOTIFY PLAYLIST LINK HERE----"
 playlist_dict = sp.playlist(playlist_link)
 
 no_of_songs = playlist_dict['tracks']['total']
