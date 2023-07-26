@@ -53,11 +53,3 @@ def clean(name):
 for i in range(len(song_list)):
     artists_list[i] = clean(str(artists_list[i].encode('utf-8', errors='replace')))
     song_list[i] = clean(str(song_list[i].encode('utf-8', errors='replace')))
-
-with open('data.txt', 'w') as f:
-    for i in range(len(song_list)):
-        f.write(f'{song_list[i]}\t{artists_list[i]}\t{release_date_list[i]}\n')
-
-with open ('songs.txt', 'w') as f:
-    for song in song_list:
-        f.write(f"{song}\n")
