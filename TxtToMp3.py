@@ -17,13 +17,13 @@ def downloadAudio(name, artist):
     link = f"https://www.youtube.com/watch?v={id[0]}"
     yt = YouTube(link, use_oauth=True, allow_oauth_cache=True)
 
-    yt.title = yt.title.translate(str.maketrans('', '', string.punctuation))
+    # yt.title = yt.title.translate(str.maketrans('', '', string.punctuation))
+    yt.title = name
 
     print(f"{name} => {link}")
 
     try:
         yt.streams.get_audio_only().download(os.path.abspath(f'./Songs'))
-        if yt.title != name:
             os.rename(f"./Songs/{yt.title}.mp4", f"./Songs/{name}.mp4")
     except Exception as e:
         print(f"Exception: {e}")
