@@ -21,18 +21,18 @@ def downloadAudio(name, artist):
     link = f"https://www.youtube.com/watch?v={id[0]}"
     yt = YouTube(link, use_oauth=True, allow_oauth_cache=True)
 
-    # yt.title = yt.title.translate(str.maketrans('', '', string.punctuation))
-
     yt.title = name
-
     try:
-        yt.streams.get_audio_only().download(os.path.abspath(f"./Songs"))
+        yt.streams.get_audio_only().download(
+            os.path.join(os.getcwd(), SpotifyToTxt.playlist_name)
+        )
+        os.rename(
+            os.path.join(SpotifyToTxt.playlist_name, f"{name}.mp4"),
+            os.path.join(SpotifyToTxt.playlist_name, f"{name}.mp3"),
+        )
         print(f"{name} => {link}")
-    # if yt.title != name:
-    # os.rename(f"./Songs/{yt.title}.mp4", f"./Songs/{name}.mp3")
     except Exception as e:
         print(f"Exception: {e}")
-    #     time.sleep(10)
 
 
 df = pd.read_csv(SpotifyToTxt.path, sep="\t")

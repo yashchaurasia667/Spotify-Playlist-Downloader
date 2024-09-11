@@ -7,7 +7,7 @@ import os
 # import string
 
 # authenticating with the spotify API
-with open("./credentials.txt") as f:
+with open("./realCreds.txt") as f:
     [CLIENT_ID, CLIENT_SECRET] = f.read().split("\n")
 
 # connecting with spotify API
