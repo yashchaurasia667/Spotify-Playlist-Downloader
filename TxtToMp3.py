@@ -5,7 +5,12 @@ import re
 from pytube import YouTube
 import os
 
-# import string
+
+def progressBar(stream, chunk, bytes_remaning):
+    total_size = stream.filesize
+    bytes_downloaded = total_size - bytes_remaning
+    completion = (bytes_downloaded / total_size) * 100
+    print(completion)
 
 
 def downloadAudio(name, artist):
@@ -20,6 +25,7 @@ def downloadAudio(name, artist):
 
     link = f"https://www.youtube.com/watch?v={id[0]}"
     yt = YouTube(link, use_oauth=True, allow_oauth_cache=True)
+    yt.register_on_progress_callback(progressBar)
 
     yt.title = name
     try:
