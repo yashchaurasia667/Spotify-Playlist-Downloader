@@ -1,10 +1,11 @@
-import SpotifyToTxt
-import pandas as pd
+from termcolor import colored, cprint
 from pytube import YouTube
 import urllib.request
+import pandas as pd
+import SpotifyToTxt
+import argparse
 import os
 import re
-from termcolor import colored, cprint
 
 
 def progressBar(stream, chunk, bytes_remaning):
@@ -42,7 +43,11 @@ def downloadAudio(name, artist):
         cprint(err)
 
 
-df = pd.read_csv(SpotifyToTxt.path, sep="\t")
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
 
-for song, artist in zip(df["songs"], df["artists"]):
-    downloadAudio(song, artist)
+    SpotifyToTxt.getSongs("https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX")
+
+    df = pd.read_csv(SpotifyToTxt.path, sep="\t")
+    for song, artist in zip(df["songs"], df["artists"]):
+        downloadAudio(song, artist)

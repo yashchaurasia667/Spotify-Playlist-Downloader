@@ -3,6 +3,7 @@ from spotipy import SpotifyClientCredentials
 import pandas as pd
 import os
 import re
+import unicodedata
 
 # authenticating with the spotify API
 with open("./realCreds.txt") as f:
@@ -14,79 +15,72 @@ auth_manager = SpotifyClientCredentials(
 )
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
-# giving playlist link
-playlist_link = "https://open.spotify.com/playlist/37i9dQZF1DZ06evNZVVBPG"
-playlist_dict = sp.playlist(playlist_link)
 
-# slicing the playlist object for the needed stuff
-playlist_name = playlist_dict["name"]
-no_of_songs = playlist_dict["tracks"]["total"]
+def clean(name):
+    windows_invalid_pattern = r'[\\/:*?">|]'
+    cleaned_name = re.sub(windows_invalid_pattern, "", name)
 
-# creating a dataframe for storing all the data
-df = pd.DataFrame(
-    {
-        "songs": pd.Series(dtype="str"),
-        "artists": pd.Series(dtype="str"),
-        "album": pd.Series(dtype="str"),
-        "release date": pd.Series(dtype="str"),
-        "image": pd.Series(dtype="str"),
-    }
-)
+    # Normalize Unicode characters and remove non printable characters
+    cleaned_name = unicodedata.normalize("NFKD", cleaned_name)
+    cleaned_name = re.sub(r"[^\x00-\x7F]+", "", cleaned_name)
 
-items = playlist_dict["tracks"]["items"]
+    # Replace invalid characters after unicode normalizing
+    cleaned_name = re.sub(windows_invalid_pattern, "", cleaned_name)
 
-offset = 0
+    # Remove trailing spaces and periods
+    cleaned_name = cleaned_name.strip(" .")
 
-for i in range(no_of_songs):
-    df.loc[i, "songs"] = re.sub(
-        "\u2018|\u2019", "'", items[i - offset]["track"]["name"]
+    # Windows allows filenames upto 255 characters
+    if len(cleaned_name) > 255:
+        cleaned_name = cleaned_name[:255]
+
+    return cleaned_name
+
+
+def getSongs(playlist_link):
+    # giving playlist link
+    # playlist_link = "https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX"
+    playlist_dict = sp.playlist(playlist_link)
+
+    # slicing the playlist object for the needed stuff
+    global playlist_name
+    playlist_name = playlist_dict["name"]
+    no_of_songs = playlist_dict["tracks"]["total"]
+
+    # creating a dataframe for storing all the data
+    df = pd.DataFrame(
+        {
+            "songs": pd.Series(dtype="str"),
+            "artists": pd.Series(dtype="str"),
+            "album": pd.Series(dtype="str"),
+            "release date": pd.Series(dtype="str"),
+            "image": pd.Series(dtype="str"),
+        }
     )
-    df.loc[i, "album"] = items[i - offset]["track"]["album"]["name"]
-    df.loc[i, "release date"] = items[i - offset]["track"]["album"]["release_date"]
 
-    images = [k["url"] for k in items[i - offset]["track"]["album"]["images"]]
-    ",".join(images)
-    df.loc[i, "image"] = images
+    tracks = playlist_dict["tracks"]
+    items = tracks["items"]
 
-    artists = [k["name"] for k in items[i - offset]["track"]["artists"]]
-    artists = ",".join(artists)
-    df.loc[i, "artists"] = artists
+    offset = 0
 
-    if (i + 1) % 100 == 0:
-        tracks = sp.next(tracks)
-        items = tracks["items"]
-        offset = i + 1
+    for i in range(no_of_songs):
+        df.loc[i, "songs"] = clean(items[i - offset]["track"]["name"])
+        df.loc[i, "album"] = items[i - offset]["track"]["album"]["name"]
+        df.loc[i, "release date"] = items[i - offset]["track"]["album"]["release_date"]
 
-path = os.path.join(os.getcwd(), "TextFiles", "data.txt")
-df.to_csv(path, sep="\t", index=False)
+        images = [k["url"] for k in items[i - offset]["track"]["album"]["images"]]
+        ",".join(images)
+        df.loc[i, "image"] = images
 
+        artists = [k["name"] for k in items[i - offset]["track"]["artists"]]
+        artists = ",".join(artists)
+        df.loc[i, "artists"] = artists
 
-# def clean(name):
-#     unknowns = re.findall(r"\\x(\S{2})", name)
-#     for unknown in unknowns:
-#         name = name.replace("\\x" + unknown, "")
-#     name = name.replace(name[0:2], "")
-#     name = name.replace(name[len(name) - 1], "")
-#     return name
+        if (i + 1) % 100 == 0:
+            tracks = sp.next(tracks)
+            items = tracks["items"]
+            offset = i + 1
 
-
-# with open(os.path.abspath("TextFiles/byteName.txt"), "w") as f:
-#     for i in range(len(song_list)):
-#         songname = str(song_list[i].encode("utf-8", errors="replace"))
-#         artist = str(artists_list[i].encode("utf-8", errors="replace"))
-#         f.write(f"{songname}\t{artist}\t{album_list[i]}\t{release_date_list[i]}\n")
-
-# for i in range(len(song_list)):
-#     artists_list[i] = clean(str(artists_list[i].encode("utf-8", errors="replace")))
-#     song_list[i] = clean(str(song_list[i].encode("utf-8", errors="replace")))
-#     song_list[i] = song_list[i].translate(str.maketrans("", "", string.punctuation))
-
-# with open(os.path.abspath("TextFiles/data.txt"), "w") as f:
-#     for i in range(len(song_list)):
-#         f.write(
-#             f"{song_list[i]}\t{artists_list[i]}\t{album_list[i]}\t{release_date_list[i]}\n"
-#         )
-
-# with open(os.path.abspath("TextFiles/songs.txt"), "w") as f:
-#     for song in song_list:
-#         f.write(f"{song}\n")
+    global path
+    path = os.path.join(os.getcwd(), "TextFiles", "data.txt")
+    df.to_csv(path, sep="\t", index=False)
