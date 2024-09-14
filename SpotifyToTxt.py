@@ -1,19 +1,61 @@
-import spotipy
 from spotipy import SpotifyClientCredentials
+from termcolor import colored, cprint
+from dotenv import load_dotenv
 import pandas as pd
+import unicodedata
+import spotipy
 import os
 import re
-import unicodedata
 
-# authenticating with the spotify API
-with open("./realCreds.txt") as f:
-    [CLIENT_ID, CLIENT_SECRET] = f.read().split("\n")
 
-# connecting with spotify API
-auth_manager = SpotifyClientCredentials(
-    client_id=CLIENT_ID, client_secret=CLIENT_SECRET
-)
-sp = spotipy.Spotify(auth_manager=auth_manager)
+# Loading the client id and client secret
+def initialize_credentials():
+    load_dotenv()
+    global CLIENT_ID
+    global CLIENT_SECRET
+
+    CLIENT_ID = os.getenv("CLIENT_ID")
+    CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+
+
+def set_credentials(id, secret):
+    with open(".env", "w") as f:
+        f.write(f"CLIENT_ID={id}\n")
+        f.write(f"CLIENT_SECRET={secret}")
+
+
+try:
+    if os.path.exists(".env"):
+        initialize_credentials()
+    else:
+        cprint(text=".env File does not exist\n", color="red")
+        raise Exception(404)
+except Exception as e:
+    cprint(
+        text="You have not yet initialized the credentials file, You can do so now: \nYOU WILL NEED A SPOTIFY FOR DEVELOPERS ACCOUNT TO CONTINUE!!",
+        color="yellow",
+    )
+    if str(e) == "404":
+        id = input("Your CLIENT ID: ")
+        secret = input("Your CLIENT SECRET: ")
+        set_credentials(id, secret)
+    initialize_credentials()
+
+try:
+    # connecting with spotify API
+    auth_manager = SpotifyClientCredentials(
+        client_id=CLIENT_ID, client_secret=CLIENT_SECRET
+    )
+    sp = spotipy.Spotify(auth_manager=auth_manager)
+    test_playlist = sp.playlist("37i9dQZF1DXcBWIGoYBM5M")
+
+    if not test_playlist:
+        raise Exception("Could not connect to spotify")
+
+    cprint(text="Connected to Spotify API succeessfully.", color="green")
+except Exception as e:
+    cprint(text="Could not connect to Spotify..", color="red")
+    cprint(text="Check your internet or change your .env file ", color="red")
 
 
 def clean(name):
@@ -22,7 +64,8 @@ def clean(name):
 
     # Normalize Unicode characters and remove non printable characters
     cleaned_name = unicodedata.normalize("NFKD", cleaned_name)
-    cleaned_name = re.sub(r"[^\x00-\x7F]+", "", cleaned_name)
+    # cleaned_name = re.sub(r"[^\x00-\x7F]+", "", cleaned_name)
+    cleaned_name = cleaned_name.encode("ascii", "ignore").decode("ascii")
 
     # Replace invalid characters after unicode normalizing
     cleaned_name = re.sub(windows_invalid_pattern, "", cleaned_name)
@@ -38,7 +81,6 @@ def clean(name):
 
 
 def getSongs(playlist_link):
-    # giving playlist link
     # playlist_link = "https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX"
     playlist_dict = sp.playlist(playlist_link)
 
@@ -82,5 +124,9 @@ def getSongs(playlist_link):
             offset = i + 1
 
     global path
-    path = os.path.join(os.getcwd(), "TextFiles", "data.txt")
+    path = os.path.join(os.getcwd(), "Playlists", f"{playlist_name}.txt")
     df.to_csv(path, sep="\t", index=False)
+
+
+if __name__ == "__main__":
+    getSongs("https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX")

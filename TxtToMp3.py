@@ -45,9 +45,15 @@ def downloadAudio(name, artist):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--spotify", help="Link to a spotify playlist")
+    parser.add_argument("--name", help="Name of the song")
 
-    SpotifyToTxt.getSongs("https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX")
+    args = parser.parse_args()
 
-    df = pd.read_csv(SpotifyToTxt.path, sep="\t")
-    for song, artist in zip(df["songs"], df["artists"]):
-        downloadAudio(song, artist)
+    print(args)
+
+    # SpotifyToTxt.getSongs("https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX")
+
+    # df = pd.read_csv(SpotifyToTxt.path, sep="\t")
+    # for song, artist in zip(df["songs"], df["artists"]):
+    #     downloadAudio(song, artist)

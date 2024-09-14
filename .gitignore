@@ -1,6 +1,5 @@
 # created by virtualenv automatically
-.venv
+.*
 realCreds.txt
 __pycache__
-.cache
 download
