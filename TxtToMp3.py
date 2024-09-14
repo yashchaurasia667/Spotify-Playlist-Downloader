@@ -21,8 +21,7 @@ def downloadAudio(name, artist):
     query = "+".join(query)
 
     html = urllib.request.urlopen(
-        f"https://www.youtube.com/results?search_query={query}"
-    )
+        f"https://www.youtube.com/results?search_query={query}")
     id = re.findall(r"watch\?v=(\S{11})", html.read().decode())
 
     link = f"https://www.youtube.com/watch?v={id[0]}"
@@ -30,30 +29,45 @@ def downloadAudio(name, artist):
 
     try:
         dName = yt.streams.get_audio_only().download(
-            os.path.join(os.getcwd(), SpotifyToTxt.playlist_name)
-        )
+            os.path.join(os.getcwd(), "Downloads", SpotifyToTxt.playlist_name))
         os.rename(
             dName,
-            os.path.join(SpotifyToTxt.playlist_name, f"{name}.mp3"),
+            os.path.join("Downloads", SpotifyToTxt.playlist_name,
+                         f"{name}.mp3"),
         )
         dwl = colored(f"{name} => {link}", "green")
         cprint(dwl)
     except Exception as e:
-        err = colored(f"Exception: {e}\nCode execution with continue shortly...", "red")
+        err = colored(
+            f"Exception: {e}\nCode execution with continue shortly...", "red")
         cprint(err)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--spotify", help="Link to a spotify playlist")
-    parser.add_argument("--name", help="Name of the song")
+    parser.add_argument("-s", "--spotify", help="Link to a spotify playlist")
+    parser.add_argument("-n", "--name", nargs='+', help="Name of the song")
+    parser.add_argument("-r",
+                        "--reset",
+                        action="store_true",
+                        help="Reset the Client id and secret in the .env file")
 
     args = parser.parse_args()
 
-    print(args)
+    if args.reset:
+        SpotifyToTxt.set_credentials()
+        exit()
 
-    # SpotifyToTxt.getSongs("https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX")
+    if not args.spotify and not args.name:
+        print("Usage: python TxtToMp3.py -s [Link to spotify playlist]")
+    elif args.spotify and args.name:
+        print("Can only process one argument at a time..")
 
-    # df = pd.read_csv(SpotifyToTxt.path, sep="\t")
-    # for song, artist in zip(df["songs"], df["artists"]):
-    #     downloadAudio(song, artist)
+    if args.spotify:
+        SpotifyToTxt.getSongs(args.spotify)
+        df = pd.read_csv(SpotifyToTxt.path, sep="\t")
+        for song, artist in zip(df["songs"], df["artists"]):
+            downloadAudio(song, artist)
+    elif args.name:
+        search = {}
+        SpotifyToTxt.search_spotify(args.name)
