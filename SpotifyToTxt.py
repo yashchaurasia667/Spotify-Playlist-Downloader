@@ -2,6 +2,7 @@ import spotipy
 from spotipy import SpotifyClientCredentials
 import pandas as pd
 import os
+import re
 
 # authenticating with the spotify API
 with open("./realCreds.txt") as f:
@@ -14,7 +15,7 @@ auth_manager = SpotifyClientCredentials(
 sp = spotipy.Spotify(auth_manager=auth_manager)
 
 # giving playlist link
-playlist_link = "https://open.spotify.com/playlist/4tFABTdqmqEBGWptJ4Khgl"
+playlist_link = "https://open.spotify.com/playlist/37i9dQZF1DZ06evNZVVBPG"
 playlist_dict = sp.playlist(playlist_link)
 
 # slicing the playlist object for the needed stuff
@@ -37,7 +38,9 @@ items = playlist_dict["tracks"]["items"]
 offset = 0
 
 for i in range(no_of_songs):
-    df.loc[i, "songs"] = items[i - offset]["track"]["name"]
+    df.loc[i, "songs"] = re.sub(
+        "\u2018|\u2019", "'", items[i - offset]["track"]["name"]
+    )
     df.loc[i, "album"] = items[i - offset]["track"]["album"]["name"]
     df.loc[i, "release date"] = items[i - offset]["track"]["album"]["release_date"]
 

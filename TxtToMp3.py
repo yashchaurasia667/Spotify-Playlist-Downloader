@@ -1,9 +1,10 @@
 import SpotifyToTxt
 import pandas as pd
-import urllib.request
-import re
 from pytube import YouTube
+import urllib.request
 import os
+import re
+from termcolor import colored, cprint
 
 
 def progressBar(stream, chunk, bytes_remaning):
@@ -25,20 +26,20 @@ def downloadAudio(name, artist):
 
     link = f"https://www.youtube.com/watch?v={id[0]}"
     yt = YouTube(link, use_oauth=True, allow_oauth_cache=True)
-    yt.register_on_progress_callback(progressBar)
 
-    yt.title = name
     try:
-        yt.streams.get_audio_only().download(
+        dName = yt.streams.get_audio_only().download(
             os.path.join(os.getcwd(), SpotifyToTxt.playlist_name)
         )
         os.rename(
-            os.path.join(SpotifyToTxt.playlist_name, f"{name}.mp4"),
+            dName,
             os.path.join(SpotifyToTxt.playlist_name, f"{name}.mp3"),
         )
-        print(f"{name} => {link}")
+        dwl = colored(f"{name} => {link}", "green")
+        cprint(dwl)
     except Exception as e:
-        print(f"Exception: {e}")
+        err = colored(f"Exception: {e}\nCode execution with continue shortly...", "red")
+        cprint(err)
 
 
 df = pd.read_csv(SpotifyToTxt.path, sep="\t")
