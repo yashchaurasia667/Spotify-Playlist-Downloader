@@ -28,7 +28,7 @@ def set_credentials():
         f.write(f"CLIENT_SECRET={secret}")
 
 
-def clean(name):
+def clean(name: str) -> str:
     windows_invalid_pattern = r'[\\/:*?">|]'
     cleaned_name = re.sub(windows_invalid_pattern, "", name)
 
@@ -69,7 +69,7 @@ def connect_spotify():
                color="red")
 
 
-def getSongs(playlist_link):
+def getSongs(playlist_link: str):
     sp = connect_spotify()
     # playlist_link = "https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX"
     playlist_dict = sp.playlist(playlist_link)
@@ -118,31 +118,43 @@ def getSongs(playlist_link):
 
     global path
     path = os.path.join(os.getcwd(), "queue", f"{playlist_name}.txt")
-    if (not os.path.exists("queue")):
-        os.mkdir("queue")
+    os.makedirs("queue", exist_ok=True)
     df.to_csv(path, sep="\t", index=False)
 
 
-def search_spotify(name):
+def search_spotify(names: list) -> list:
     sp = connect_spotify()
+    tracks = pd.DataFrame({
+        "songs": pd.Series(dtype='str'),
+        "artists": pd.Series(dtype="str")
+    })
+
     try:
-        result = sp.search(q=name, type='track', limit=10)
-        print()
+        for name in names:
+            result = sp.search(q=name, type='track', limit=10)
+            print()
+            queue = []
+            for idx, track in enumerate(result['tracks']['items']):
+                # queue.loc[idx, 'songs'] = track['name']
+                # queue.loc[idx, 'artists'] = track['artists'][0]['name']
+                queue.append([track['name'], track['artists'][0]['name']])
+                print(
+                    f"{idx+1}. {track['name']} by {track['artists'][0]['name']}"
+                )
 
-        tracks = []
+            os.makedirs('queue', exist_ok=True)
+            choice = int(input("\nChoose a song to download: "))
 
-        for idx, track in enumerate(result['tracks']['items']):
-            tracks.append([track['name'], track['artists'][0]['name']])
-            print(f"{idx+1}. {track['name']} by {track['artists'][0]['name']}")
-
-        choice = int(input("\nChoose a song to download: "))
-        if (choice > 0):
-            return tracks[choice - 1]
-        raise Exception(404)
+            if (choice > 0):
+                tracks.loc[len(tracks)] = queue[choice - 1]
+            else:
+                raise Exception(404)
+        tracks.to_csv(os.path.join("queue", "queue.txt"), sep='\t')
     except Exception as e:
         if (str(e) == '404'):
             cprint(text="Invalid choice!!", color='red')
         else:
+            print(e)
             cprint(text="Something went wrong while searching for the song...",
                    color="red")
         exit()

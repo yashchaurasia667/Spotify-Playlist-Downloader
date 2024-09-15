@@ -70,10 +70,13 @@ if __name__ == "__main__":
             downloadAudio(song, artist, path)
         os.remove(SpotifyToTxt.path)
     elif args.name:
-        search = {}
-        for name in args.name:
-            query = SpotifyToTxt.search_spotify(name)
-            path = os.path.join("Downloads", "Singles")
-            os.makedirs(path, exist_ok=True)
-            print()
-            downloadAudio(query[0], query[1], path)
+        SpotifyToTxt.search_spotify(args.name)
+        search = pd.read_csv(os.path.join("queue", "queue.txt"), sep='\t')
+
+        path = os.path.join("Downloads", "Singles")
+        os.makedirs(path, exist_ok=True)
+
+        for name, artist in zip(search['songs'], search['artists']):
+            downloadAudio(name, artist, path)
+
+        os.remove(os.path.join("queue", "queue.txt"))
