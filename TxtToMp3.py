@@ -15,7 +15,7 @@ def progressBar(stream, chunk, bytes_remaning):
     print(completion)
 
 
-def downloadAudio(name, artist):
+def downloadAudio(name, artist, path):
     query = name + "+" + artist
     query = query.split(" ")
     query = "+".join(query)
@@ -66,8 +66,15 @@ if __name__ == "__main__":
     if args.spotify:
         SpotifyToTxt.getSongs(args.spotify)
         df = pd.read_csv(SpotifyToTxt.path, sep="\t")
+
+        if (not os.path.exists("Playlists")):
+            os.mkdir("Downloads")
+
         for song, artist in zip(df["songs"], df["artists"]):
             downloadAudio(song, artist)
     elif args.name:
         search = {}
-        SpotifyToTxt.search_spotify(args.name)
+        for name in args.name:
+            query = SpotifyToTxt.search_spotify(name)
+            print(query)
+            downloadAudio(query[0], query[1])

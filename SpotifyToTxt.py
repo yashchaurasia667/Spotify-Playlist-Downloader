@@ -1,6 +1,6 @@
 from spotipy import SpotifyClientCredentials
-from termcolor import colored, cprint
 from dotenv import load_dotenv
+from termcolor import cprint
 import pandas as pd
 import unicodedata
 import spotipy
@@ -28,23 +28,6 @@ def set_credentials():
         f.write(f"CLIENT_SECRET={secret}")
 
 
-try:
-    if os.path.exists(".env"):
-        initialize_credentials()
-    else:
-        cprint(text=".env File does not exist\n", color="red")
-        raise Exception(404)
-except Exception as e:
-    cprint(
-        text=
-        "You have not yet initialized the credentials file, You can do so now: \nYOU WILL NEED A SPOTIFY FOR DEVELOPERS ACCOUNT TO CONTINUE!!",
-        color="yellow",
-    )
-    if str(e) == "404":
-        set_credentials()
-    initialize_credentials()
-
-
 def clean(name):
     windows_invalid_pattern = r'[\\/:*?">|]'
     cleaned_name = re.sub(windows_invalid_pattern, "", name)
@@ -67,24 +50,27 @@ def clean(name):
     return cleaned_name
 
 
-def getSongs(playlist_link):
+def connect_spotify():
     try:
         # connecting with spotify API
         auth_manager = SpotifyClientCredentials(client_id=CLIENT_ID,
                                                 client_secret=CLIENT_SECRET)
-        global sp
         sp = spotipy.Spotify(auth_manager=auth_manager)
         test_playlist = sp.playlist("37i9dQZF1DXcBWIGoYBM5M")
 
         if not test_playlist:
             raise Exception("Could not connect to spotify")
-
         cprint(text="Connected to Spotify API succeessfully.", color="green")
+        return sp
+
     except Exception as e:
         cprint(text="Could not connect to Spotify..", color="red")
         cprint(text="Check your internet or change your .env file ",
                color="red")
 
+
+def getSongs(playlist_link):
+    sp = connect_spotify()
     # playlist_link = "https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX"
     playlist_dict = sp.playlist(playlist_link)
 
@@ -131,22 +117,52 @@ def getSongs(playlist_link):
             offset = i + 1
 
     global path
-    path = os.path.join(os.getcwd(), "Playlists", f"{playlist_name}.txt")
+    path = os.path.join(os.getcwd(), "queue", f"{playlist_name}.txt")
+    if (not os.path.exists("queue")):
+        os.mkdir("queue")
     df.to_csv(path, sep="\t", index=False)
 
 
 def search_spotify(name):
-    results = sp.search(name)
-    tracks = results.get_tracks()
-    counter = 0
-    for song in tracks:
-        counter += 1
-        cprint(f"{counter}. {song.name}", "green", end="")
-        print(" by ", end="")
-        cprint(f"{song.artists[0].name}", "yellow")
-    choice = int(input("choose number: "))
-    return tracks[choice]
+    sp = connect_spotify()
+    try:
+        result = sp.search(q=name, type='track', limit=10)
+        print()
 
+        tracks = []
+
+        for idx, track in enumerate(result['tracks']['items']):
+            tracks.append([track['name'], track['artists'][0]['name']])
+            print(f"{idx+1}. {track['name']} by {track['artists'][0]['name']}")
+
+        choice = int(input("\nChoose a song to download: "))
+        if (choice > 0):
+            return tracks[choice - 1]
+        raise Exception(404)
+    except Exception as e:
+        if (str(e) == '404'):
+            cprint(text="Invalid choice!!", color='red')
+        else:
+            cprint(text="Something went wrong while searching for the song...",
+                   color="red")
+        exit()
+
+
+try:
+    if os.path.exists(".env"):
+        initialize_credentials()
+    else:
+        cprint(text=".env File does not exist\n", color="red")
+        raise Exception(404)
+except Exception as e:
+    cprint(
+        text=
+        "You have not yet initialized the credentials file, You can do so now: \nYOU WILL NEED A SPOTIFY FOR DEVELOPERS ACCOUNT TO CONTINUE!!",
+        color="yellow",
+    )
+    if str(e) == "404":
+        set_credentials()
+    initialize_credentials()
 
 if __name__ == "__main__":
     getSongs("https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX")
