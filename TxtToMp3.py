@@ -1,4 +1,4 @@
-from termcolor import colored, cprint
+from termcolor import cprint
 from pytube import YouTube
 import urllib.request
 import pandas as pd
@@ -28,19 +28,15 @@ def downloadAudio(name, artist, path):
     yt = YouTube(link, use_oauth=True, allow_oauth_cache=True)
 
     try:
-        dName = yt.streams.get_audio_only().download(
-            os.path.join(os.getcwd(), "Downloads", SpotifyToTxt.playlist_name))
+        dName = yt.streams.get_audio_only().download(path)
         os.rename(
             dName,
-            os.path.join("Downloads", SpotifyToTxt.playlist_name,
-                         f"{name}.mp3"),
+            os.path.join(path, f"{name}.mp3"),
         )
-        dwl = colored(f"{name} => {link}", "green")
-        cprint(dwl)
+        cprint(f"{name} => {link}", color="green")
     except Exception as e:
-        err = colored(
-            f"Exception: {e}\nCode execution with continue shortly...", "red")
-        cprint(err)
+        cprint(f"Exception: {e}\nCode execution with continue shortly...",
+               color="red")
 
 
 if __name__ == "__main__":
@@ -66,15 +62,18 @@ if __name__ == "__main__":
     if args.spotify:
         SpotifyToTxt.getSongs(args.spotify)
         df = pd.read_csv(SpotifyToTxt.path, sep="\t")
-
-        if (not os.path.exists("Playlists")):
-            os.mkdir("Downloads")
-
+        path = os.path.join("Downloads", "Playlists",
+                            SpotifyToTxt.playlist_name)
+        os.makedirs(path, exist_ok=True)
+        print()
         for song, artist in zip(df["songs"], df["artists"]):
-            downloadAudio(song, artist)
+            downloadAudio(song, artist, path)
+        os.remove(SpotifyToTxt.path)
     elif args.name:
         search = {}
         for name in args.name:
             query = SpotifyToTxt.search_spotify(name)
-            print(query)
-            downloadAudio(query[0], query[1])
+            path = os.path.join("Downloads", "Singles")
+            os.makedirs(path, exist_ok=True)
+            print()
+            downloadAudio(query[0], query[1], path)
