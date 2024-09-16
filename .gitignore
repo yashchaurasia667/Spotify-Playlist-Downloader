@@ -3,3 +3,8 @@
 realCreds.txt
 __pycache__
 download
+node_modules
+dist
+out
+.DS_Store
+*.log*
