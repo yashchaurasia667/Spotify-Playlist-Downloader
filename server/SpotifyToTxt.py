@@ -29,12 +29,10 @@ def set_credentials():
 
 
 def clean(name: str) -> str:
-  windows_invalid_pattern = r'[\\/:*?">|]'
-  cleaned_name = re.sub(windows_invalid_pattern, "", name)
+  windows_invalid_pattern = r'[\\/:*?"<>|]'
 
   # Normalize Unicode characters and remove non printable characters
   cleaned_name = unicodedata.normalize("NFKD", cleaned_name)
-  # cleaned_name = re.sub(r"[^\x00-\x7F]+", "", cleaned_name)
   cleaned_name = cleaned_name.encode("ascii", "ignore").decode("ascii")
 
   # Replace invalid characters after unicode normalizing
