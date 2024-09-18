@@ -1,20 +1,23 @@
-import { FaSpotify } from "react-icons/fa";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
+
 import "./App.css";
+import MainLayout from "./Layouts/MainLayout";
 
 function App() {
-  return (
-    <>
-      <div className="flex items-center overflow-hidden p-5 pt-8">
-        <FaSpotify className="fill-purple-600" size={60} />
-        <h1 className="text-[2rem] font-semibold">
-          Download Spotify Playlists
-        </h1>
-      </div>
-      <div>
-        
-      </div>
-    </>
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/" element={<MainLayout />}>
+        <Route index element={<div></div>}></Route>
+      </Route>
+    )
   );
+
+  return <RouterProvider router={router} />;
 }
 
 export default App;
