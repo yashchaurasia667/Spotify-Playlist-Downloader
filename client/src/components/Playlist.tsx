@@ -1,4 +1,7 @@
+import { useState } from "react";
+
 const Playlist = () => {
+  const [link, setLink] = useState("");
   return (
     <div className="p-5 flex flex-col justify-center gap-y-6 mt-32">
       <form
@@ -10,6 +13,8 @@ const Playlist = () => {
           name="link"
           className="bg-[#242424] w-[90%] md:w-[70%] lg:w-[40%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all"
           placeholder="Link to spotify playlist"
+          value={link}
+          onChange={(e) => setLink(e.target.value)}
         />
         <button
           type="submit"

@@ -1,6 +1,9 @@
+import { useState } from "react";
+
 const Name = () => {
   const nameClass =
     "bg-[#242424] w-[90%] md:w-[60%] xl:w-[40%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all";
+  const [name, setName] = useState("");
   return (
     <div className="p-5 flex flex-col justify-center gap-y-6 mt-32">
       <form
@@ -12,6 +15,8 @@ const Name = () => {
           name="link"
           className={nameClass}
           placeholder="Song name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
         <button
           type="submit"

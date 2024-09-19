@@ -39,7 +39,8 @@ async def download_audio(name, artist, path):
       yt = YouTube(link, use_oauth=True, allow_oauth_cache=True, on_progress_callback=progressBar)
 
       try:
-        dName = await asyncio.to_thread(yt.streams.get_audio_only().download, path)
+        # dName = await asyncio.to_thread(yt.streams.get_audio_only().download, path)
+        dName = yt.streams.get_audio_only().download(path)
         newName = os.path.join(path, f"{name}.mp3")
         os.rename(dName, newName)
         cprint(f"{name} => {link}", color="green")

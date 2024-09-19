@@ -1,4 +1,12 @@
+import { useState } from "react";
+
 const Reset = () => {
+  const resetClass =
+    "mx-auto bg-[#242424] w-[90%] md:w-[40%] xl:w-[25%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all";
+
+  const [id, setId] = useState("");
+  const [secret, setSecret] = useState("");
+
   const initialize = async (e) => {
     e.preventDefault();
     try {
@@ -9,12 +17,15 @@ const Reset = () => {
         },
         body: JSON.stringify({ id, secret }),
       });
+
+      const data = await res.json();
+      // if (data.success) {
+      // }
     } catch (error) {
-      throw new Error(`Something went wrong... ${error}`)
+      throw new Error(`Something went wrong... ${error}`);
     }
   };
-  const resetClass =
-    "mx-auto bg-[#242424] w-[90%] md:w-[40%] xl:w-[25%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all";
+
   return (
     <form method="post">
       <div className="flex flex-col gap-y-5 mb-5 mt-28">
@@ -23,12 +34,16 @@ const Reset = () => {
           placeholder="CLIENT ID"
           name="id"
           className={resetClass}
+          value={id}
+          onChange={(e) => setId(e.target.value)}
         />
         <input
           type="text"
           placeholder="CLIENT SECRET"
           name="secret"
           className={resetClass}
+          value={secret}
+          onChange={(e) => setSecret(e.target.value)}
         />
         <button
           type="submit"
