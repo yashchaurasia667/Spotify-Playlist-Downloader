@@ -36,7 +36,7 @@ async def download_audio(name, artist, path):
     id = await fetch_id(name, artist, session)
     if (id):
       link = f"https://www.youtube.com/watch?v={id}"
-      yt = YouTube(link, use_oauth=True, allow_oauth_cache=True)
+      yt = YouTube(link, use_oauth=True, allow_oauth_cache=True, on_progress_callback=progressBar)
 
       try:
         dName = await asyncio.to_thread(yt.streams.get_audio_only().download, path)

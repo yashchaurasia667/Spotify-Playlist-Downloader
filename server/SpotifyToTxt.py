@@ -32,7 +32,7 @@ def clean(name: str) -> str:
   windows_invalid_pattern = r'[\\/:*?"<>|]'
 
   # Normalize Unicode characters and remove non printable characters
-  cleaned_name = unicodedata.normalize("NFKD", cleaned_name)
+  cleaned_name = unicodedata.normalize("NFKD", name)
   cleaned_name = cleaned_name.encode("ascii", "ignore").decode("ascii")
 
   # Replace invalid characters after unicode normalizing
