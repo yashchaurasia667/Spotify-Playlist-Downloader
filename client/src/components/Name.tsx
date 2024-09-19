@@ -4,6 +4,21 @@ const Name = () => {
   const nameClass =
     "bg-[#242424] w-[90%] md:w-[60%] xl:w-[40%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all";
   const [name, setName] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name }),
+      });
+      const data = await res.json();
+    } catch (error) {
+      throw new Error(`Something went wrong... ${error}`);
+    }
+  };
   return (
     <div className="p-5 flex flex-col justify-center gap-y-6 mt-32">
       <form
@@ -21,6 +36,7 @@ const Name = () => {
         <button
           type="submit"
           className="font-semibold w-[90%] md:w-[30%] lg:w-auto bg-purple-400 text-[#121212] rounded-full px-10 py-4 hover:scale-105 hover:bg-purple-300 transition-all"
+          onClick={handleSubmit}
         >
           Search
         </button>

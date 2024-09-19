@@ -22,6 +22,25 @@ body {
   min-height: 100vh;
 }
 
+.navlink {
+  font-weight: 600;
+  color: #acacac;
+  padding: 1rem 0.75rem;
+  border-radius: 5px;
+  transition: all 0.1s ease-out;
+}
+
+.navlink:hover {
+  scale: 105%;
+  color: #fff;
+}
+
 .active {
-  
+  background-color: #c084fc;
+  color: #121212;
+}
+
+.active:hover {
+  background: #d8b4fe;
+  color: #121212;
 }

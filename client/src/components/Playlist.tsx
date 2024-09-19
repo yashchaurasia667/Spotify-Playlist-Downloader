@@ -2,11 +2,26 @@ import { useState } from "react";
 
 const Playlist = () => {
   const [link, setLink] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ link }),
+      });
+      const data = await res.json();
+    } catch (error) {
+      throw new Error(`Something weent wrong... ${error}`);
+    }
+  };
   return (
     <div className="p-5 flex flex-col justify-center gap-y-6 mt-32">
       <form
         method="post"
-        className="flex lg:flex-row flex-col justify-center items-center gap-x-3"
+        className="flex lg:flex-row flex-col justify-center items-center gap-x-3 gap-y-6"
       >
         <input
           type="text"
@@ -19,6 +34,7 @@ const Playlist = () => {
         <button
           type="submit"
           className="font-semibold bg-purple-400 text-[#121212] rounded-full px-10 py-4 hover:scale-105 hover:bg-purple-300 transition-all"
+          onClick={handleSubmit}
         >
           Search
         </button>

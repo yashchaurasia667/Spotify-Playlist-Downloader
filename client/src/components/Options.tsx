@@ -1,17 +1,15 @@
 import { NavLink } from "react-router-dom";
 
 const Options = () => {
-  const navStyle =
-    "font-semibold bg-purple-400 text-[#121212] rounded-[5px] px-3 py-4 hover:scale-105 hover:bg-purple-300 transition-all";
   return (
     <div className="flex gap-x-4 justify-center">
-      <NavLink to={"/"} className={navStyle}>
+      <NavLink to={"/"} className={"navlink"}>
         Spotify Playlist
       </NavLink>
-      <NavLink to={"/name"} className={navStyle}>
+      <NavLink to={"/name"} className={"navlink"}>
         Song Name
       </NavLink>
-      <NavLink to={"/reset"} className={navStyle}>
+      <NavLink to={"/reset"} className={"navlink"}>
         Initialize
       </NavLink>
     </div>
