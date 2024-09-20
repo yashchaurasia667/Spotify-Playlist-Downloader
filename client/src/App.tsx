@@ -18,7 +18,8 @@ function App() {
       <Route path="/" element={<MainLayout />}>
         <Route index element={<Playlist />}></Route>
         <Route path="reset" element={<Reset />} />
-        <Route path="name" element={<Name />} />
+        <Route path="downloads" element={<Name />} />
+        <Route path="help" element={<Name />} />
       </Route>
     )
   );

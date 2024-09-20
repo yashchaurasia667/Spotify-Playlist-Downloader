@@ -17,6 +17,7 @@ const Playlist = () => {
       throw new Error(`Something weent wrong... ${error}`);
     }
   };
+
   return (
     <div className="p-5 flex flex-col justify-center gap-y-6 mt-32">
       <form

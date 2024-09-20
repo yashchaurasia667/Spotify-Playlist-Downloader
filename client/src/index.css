@@ -25,7 +25,7 @@ body {
 .navlink {
   font-weight: 600;
   color: #acacac;
-  padding: 1rem 0.75rem;
+  padding: 1rem;
   border-radius: 5px;
   transition: all 0.1s ease-out;
 }
