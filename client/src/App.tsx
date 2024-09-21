@@ -6,9 +6,9 @@ import {
 } from "react-router-dom";
 
 import MainLayout from "./Layouts/MainLayout";
-import Playlist from "./components/Playlist";
+import Search from "./components/Search";
 import Name from "./components/Name";
-import Reset from "./components/Reset";
+import Login from "./components/Login";
 
 import "./App.css";
 
@@ -16,9 +16,9 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<Playlist />}></Route>
-        <Route path="reset" element={<Reset />} />
+        <Route index element={<Search />}></Route>
         <Route path="downloads" element={<Name />} />
+        <Route path="login" element={<Login />} />
         <Route path="help" element={<Name />} />
       </Route>
     )

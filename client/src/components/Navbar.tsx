@@ -48,7 +48,7 @@ const Navbar = () => {
         <NavLink to={"/downloads"} className={"navlink"}>
           {pages.downloads}
         </NavLink>
-        <NavLink to={"/reset"} className={"navlink"}>
+        <NavLink to={"/login"} className={"navlink"}>
           {pages.login}
         </NavLink>
         <NavLink to={"/help"} className={"navlink"}>
