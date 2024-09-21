@@ -36,7 +36,7 @@ const Navbar = () => {
 
   return (
     <div
-      className="pl-4 pr-4 relative my-3 rounded-xl bg-[#242424] flex items-center w-[90px] hover:w-[200px] transition-all overflow-hidden"
+      className="pl-4 pr-4 relative my-3 rounded-xl bg-[#242424] flex items-center w-[95px] hover:w-[240px] transition-all overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

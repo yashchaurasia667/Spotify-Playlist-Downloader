@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Name = () => {
+const Downloads = () => {
   const nameClass =
     "bg-[#242424] w-[90%] md:w-[60%] xl:w-[40%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all";
   const [name, setName] = useState("");
@@ -45,4 +45,4 @@ const Name = () => {
   );
 };
 
-export default Name;
+export default Downloads;

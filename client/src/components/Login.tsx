@@ -1,16 +1,19 @@
 import { useState } from "react";
+import { IoHandLeft } from "react-icons/io5";
 
 const Login = () => {
-  const resetClass =
-    "mx-auto bg-[#242424] w-[90%] md:w-[40%] xl:w-[25%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all";
+  const inputClass =
+    "mb-2 mx-auto bg-[#242424] w-[90%] md:w-[40%] xl:w-[25%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all";
+  const buttonClass =
+    "mt-2 mx-auto bg-purple-400 text-[#121212] font-semibold w-[90%] md:w-[40%] xl:w-[25%] px-8 py-3 rounded-full transition-all hover:scale-105 hover:bg-purple-300";
 
   const [id, setId] = useState("");
   const [secret, setSecret] = useState("");
 
-  const initialize = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("api", {
+      const res = await fetch("/api", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,33 +30,27 @@ const Login = () => {
   };
 
   return (
-    <form method="post">
-      <div className="flex flex-col gap-y-5 mb-5 mt-28">
+    <div className="w-[100%] flex items-center">
+      <form className="flex flex-col w-[100%]">
         <input
           type="text"
-          placeholder="CLIENT ID"
-          name="id"
-          className={resetClass}
           value={id}
           onChange={(e) => setId(e.target.value)}
+          placeholder="CLIENT ID"
+          className={inputClass}
         />
         <input
-          type="text"
-          placeholder="CLIENT SECRET"
-          name="secret"
-          className={resetClass}
+          type="password"
           value={secret}
           onChange={(e) => setSecret(e.target.value)}
+          placeholder="CLIENT SECRET"
+          className={inputClass}
         />
-        <button
-          type="submit"
-          className="mx-auto bg-purple-400 text-[#121212] font-semibold w-[90%] md:w-[40%] xl:w-[25%] px-8 py-3 rounded-full transition-all hover:scale-105"
-          onClick={initialize}
-        >
-          Set Account
+        <button className={buttonClass} onClick={(e) => handleSubmit(e)}>
+          Login
         </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 
