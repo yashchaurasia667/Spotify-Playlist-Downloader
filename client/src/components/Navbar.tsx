@@ -36,11 +36,11 @@ const Navbar = () => {
 
   return (
     <div
-      className="pl-4 pr-4 relative my-3 rounded-xl bg-[#242424] flex items-center w-[95px] hover:w-[240px] transition-all overflow-hidden"
+      className="flex items-center pl-4 pr-4 relative my-3 rounded-xl bg-[#242424] w-[95px] hover:w-[210px] transition-all overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex flex-col gap-y-4 ">
+      <div className="flex flex-col gap-y-4">
         <FaSpotify size={60} className="absolute top-6 left-[13px]" />
         <NavLink to={"/"} className={"navlink"}>
           {pages.search}
