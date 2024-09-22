@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IoHandLeft } from "react-icons/io5";
+// import { IoHandLeft } from "react-icons/io5";
 
 const Login = () => {
   const inputClass =
@@ -30,7 +30,8 @@ const Login = () => {
   };
 
   return (
-    <div className="w-[100%] flex items-center">
+    <div className="w-[100%] flex flex-col justify-center">
+      <p className="font-bold text-3xl mx-auto mb-10">Log In</p>
       <form className="flex flex-col w-[100%]">
         <input
           type="text"
