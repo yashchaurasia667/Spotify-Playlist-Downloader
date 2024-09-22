@@ -50,7 +50,7 @@ body {
   display: inline-block;
 }
 
-.dropdown button {
+.dropdown .select {
   color: #acacac;
   background-color: #242424;
   border: 2px solid #acacac;

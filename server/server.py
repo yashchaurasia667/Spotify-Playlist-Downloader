@@ -1,24 +1,15 @@
-# from flask import Flask, request
-
-# app = Flask(__name__)
-
-# @app.route('/', methods=['POST'])
-# def handle_post():
-#   data = request.form
-#   return 'data received' + str(data)
-
-# if __name__ == '__main__':
-#   app.run(debug=True)
-
-from flask import Flask
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
 
-@app.route('/')
+@app.route('/', methods=['POST'])
 def hello():
-  return '<h1>Hello</h1>'
+  data = request.get_json()
+  # print(type(data))
+  print(data['query'])
+  return jsonify(message="hello")
 
 
 if __name__ == '__main__':
-  app.run()
+  app.run(debug=True)

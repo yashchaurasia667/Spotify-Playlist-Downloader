@@ -41,7 +41,10 @@ const Navbar = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="flex flex-col gap-y-4">
-        <FaSpotify size={60} className="absolute top-6 left-[13px]" />
+        <FaSpotify
+          size={60}
+          className="absolute top-6 left-[13px] text-purple-400"
+        />
         <NavLink to={"/"} className={"navlink"}>
           {pages.search}
         </NavLink>

@@ -4,10 +4,9 @@ import { FaChevronDown } from "react-icons/fa";
 const Search = () => {
   const [query, setQuery] = useState("");
   const [type, setType] = useState("Playlist");
+  const [result, setResult] = useState("");
 
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const res = await fetch("/api", {
@@ -15,7 +14,7 @@ const Search = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, type }),
       });
       const data = await res.json();
       console.log(data);
@@ -29,15 +28,13 @@ const Search = () => {
       <form
         method="post"
         className="flex lg:flex-row flex-col justify-center items-center gap-x-3 gap-y-6"
+        onSubmit={handleSubmit}
       >
         <div className="dropdown">
-          <button
-            className="flex items-center gap-x-2"
-            onClick={(e) => e.preventDefault()}
-          >
+          <div className="select flex items-center gap-x-2">
             {type}
             <FaChevronDown />
-          </button>
+          </div>
           <div className="dropdown_content">
             <div onClick={() => setType("Playlist")}>Playlist</div>
             <div onClick={() => setType("Name")}>Name</div>
@@ -60,11 +57,11 @@ const Search = () => {
         <button
           type="submit"
           className="font-semibold bg-purple-400 text-[#121212] rounded-full px-10 py-4 hover:scale-105 hover:bg-purple-300 transition-all"
-          onClick={(e) => handleSubmit}
         >
           Search
         </button>
       </form>
+      <div className="results">{}</div>
     </div>
   );
 };
