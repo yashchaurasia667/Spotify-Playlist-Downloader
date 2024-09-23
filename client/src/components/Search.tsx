@@ -3,7 +3,7 @@ import { FaChevronDown } from "react-icons/fa";
 
 const Search = () => {
   const [query, setQuery] = useState("");
-  const [type, setType] = useState("Playlist");
+  const [qtype, setQtype] = useState("Playlist");
   const [result, setResult] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -14,7 +14,7 @@ const Search = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ query, type }),
+        body: JSON.stringify({ query, qtype }),
       });
       const data = await res.json();
       console.log(data);
@@ -32,12 +32,12 @@ const Search = () => {
       >
         <div className="dropdown">
           <div className="select flex items-center gap-x-2">
-            {type}
+            {qtype}
             <FaChevronDown />
           </div>
           <div className="dropdown_content">
-            <div onClick={() => setType("Playlist")}>Playlist</div>
-            <div onClick={() => setType("Name")}>Name</div>
+            <div onClick={() => setQtype("Playlist")}>Playlist</div>
+            <div onClick={() => setQtype("Name")}>Name</div>
           </div>
         </div>
 
@@ -46,7 +46,7 @@ const Search = () => {
           name="link"
           className="bg-[#242424] w-[90%] md:w-[70%] lg:w-[40%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all"
           placeholder={
-            type === "Name"
+            qtype === "Name"
               ? "Name of the song"
               : "Link to the Spotify playlist"
           }

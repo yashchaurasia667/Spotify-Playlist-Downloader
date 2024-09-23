@@ -4,6 +4,7 @@ from termcolor import cprint
 import pandas as pd
 import unicodedata
 import spotipy
+import json
 import os
 import re
 
@@ -111,6 +112,16 @@ def getSongs(playlist_link: str):
   path = os.path.join(os.getcwd(), "queue", f"{playlist_name}.txt")
   os.makedirs("queue", exist_ok=True)
   df.to_csv(path, sep="\t", index=False)
+
+
+def search_gui(name: str) -> pd.DataFrame:
+  sp = connect_spotify()
+  try:
+    results = sp.search(q=name, type='track', limit=10)
+    # return results['tracks']['items']
+    return results
+  except Exception as e:
+    return json.dumps({'message': 'Something went wrong while searching...', 'success': 'false'})
 
 
 def search_spotify(names: list) -> list:
