@@ -114,12 +114,14 @@ def getSongs(playlist_link: str):
   df.to_csv(path, sep="\t", index=False)
 
 
-def search_gui(name: str) -> pd.DataFrame:
+def search_gui(name: str, qtype='name') -> pd.DataFrame:
   sp = connect_spotify()
   try:
-    results = sp.search(q=name, type='track', limit=10)
-    # return results['tracks']['items']
-    return results
+    if (qtype == 'name'):
+      results = sp.search(q=name, type='track', limit=10)
+      return results
+    elif (qtype == 'playlist'):
+      getSongs(name)
   except Exception as e:
     return json.dumps({'message': 'Something went wrong while searching...', 'success': 'false'})
 

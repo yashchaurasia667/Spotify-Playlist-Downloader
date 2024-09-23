@@ -6,6 +6,15 @@ const Search = () => {
   const [qtype, setQtype] = useState("Playlist");
   const [result, setResult] = useState("");
 
+  // const renderResult = ({
+  //   album,
+  //   artists,
+  //   duration,
+  //   images,
+  //   index,
+  //   name,
+  // }) => {};
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -17,7 +26,12 @@ const Search = () => {
         body: JSON.stringify({ query, qtype }),
       });
       const data = await res.json();
-      console.log(data);
+      if (data.success) {
+        // data.songs.forEach((song) => {
+        //   console.log(song);
+        // });
+        setResult(data.songs);
+      }
     } catch (error) {
       throw new Error(`Something weent wrong... ${error}`);
     }
@@ -61,7 +75,14 @@ const Search = () => {
           Search
         </button>
       </form>
-      <div className="results">{}</div>
+      <div className="mx-auto w-[65%] flex flex-col items-center justify-center gap-y-3">
+        <div className="w-[100%] h-[80px] rounded-lg bg-[#242424] px-6 py-4 flex justify-between items-center">
+          <div className="flex gap-x-8">
+            <img src={"/vite.svg"} alt="cover" className="rounded-lg" />
+            <p className="text-lg font-semibold">{"title"}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

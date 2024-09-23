@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-import pandas as pd
 import SpotifyToTxt
 
 app = Flask(__name__)
@@ -9,18 +8,20 @@ app = Flask(__name__)
 def hello():
   data = request.get_json()
   if data['query']:
-    if (data['qtype'] == 'Playlist'):
+    if (data['qtype'].lower() == 'name'):
       tracks = SpotifyToTxt.search_gui(data['query'])
       songs = []
-      # for idx, track in enumerate(tracks['tracks']['items']):
-      #   songs.append({
-      #     'index': idx+1,
-      #     'name': track['name'],
-      #     'album': track['album']
-      #   })
-      # print(tracks['tracks']['items'][0]['album'])
-      return jsonify(success=True, name=tracks['tracks']['items'][0]['album']['name'])
-    return jsonify(message="names recieved")
+      for idx, track in enumerate(tracks['tracks']['items']):
+        songs.append({
+            'index': idx + 1,
+            'name': track['name'],
+            'artists': [artist['name'] for artist in track['artists']],
+            'album': track['album']['name'],
+            'images': [k['url'] for k in track['album']['images']],
+            'duration': track['duration_ms'],
+        })
+      return jsonify(success=True, songs=songs)
+    return jsonify(message="playlist recieved")
 
 
 if __name__ == '__main__':
