@@ -17,14 +17,13 @@ def hello():
             'name': track['name'],
             'artists': [artist['name'] for artist in track['artists']],
             'album': track['album']['name'],
-            # 'images': [k['url'] for k in track['album']['images']],
             'images': track['album']['images'][1]['url'],
             'duration': track['duration_ms'],
         })
-        # print(track['album']['images'][1]['url'])
-
       return jsonify(success=True, songs=songs)
-    return jsonify(message="playlist recieved")
+    if (data['qtype'].lower() == 'playlist'):
+      tracks = SpotifyToTxt.search_gui(data['query'], qtype='playlist')
+      return jsonify(message="playlist recieved")
 
 
 if __name__ == '__main__':
