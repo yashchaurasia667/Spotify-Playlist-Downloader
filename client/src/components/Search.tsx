@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { render } from "react-dom";
 import { FaChevronDown } from "react-icons/fa";
 
 const Search = () => {
@@ -7,6 +6,12 @@ const Search = () => {
   const [qtype, setQtype] = useState("Playlist");
   const [response, setResponse] = useState("");
   const [result, setResult] = useState([]);
+
+  const fromMilliseconds = (ms) => {
+    let min = Math.floor(ms / 60000);
+    let sec = ((ms % 60000) / 1000).toFixed(0);
+    return min + ":" + (sec < 10 ? "0" : "") + sec;
+  };
 
   const renderResult = () => {
     if (response != "") {
@@ -17,17 +22,17 @@ const Search = () => {
 
   const renderElement = ({ album, artists, duration, images, index, name }) => {
     return (
-      <div className="font-semibold w-[100%] h-[80px] flex justify-between items-center rounded-lg bg-[#242424] px-6 py-4">
-        <div className="flex items-center gap-x-4">
+      <div className="font-semibold w-[100%] h-[80px] grid grid-cols-[3fr_1fr_1fr_1fr] items-center rounded-lg bg-[#242424] px-6 py-4">
+        <div className="flex items-center gap-x-4 overflow-hidden">
           <div>{index}</div>
-          <img src="/vite.svg" alt="" />
+          <img src={images} width={"50px"} className="rounded-[10px]" />
           <div>
             <p className="text-purple-500">{name}</p>
-            <p className="underline">{artists}</p>
+            <p className="underline text-ellipsis">{artists}</p>
           </div>
         </div>
         <div>{album}</div>
-        <div>{duration}</div>
+        <div>{fromMilliseconds(duration)}</div>
         <button
           className="text-[#121212] bg-purple-500 hover:bg-purple-400 hover:scale-105 rounded-full px-4 py-2 transition-all"
           onClick={(e) => e.preventDefault()}
@@ -63,7 +68,7 @@ const Search = () => {
   }, [response]);
 
   return (
-    <div className="flex flex-col h-[100vh]">
+    <div className="flex flex-col p-5 h-[100vh]">
       <div className="w-[100%] h-[40%] p-5 flex flex-col justify-end gap-y-6">
         <form
           method="post"
