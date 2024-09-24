@@ -63,7 +63,7 @@ const Search = () => {
   }, [response]);
 
   return (
-    <div>
+    <div className="flex flex-col h-[100vh]">
       <div className="w-[100%] h-[40%] p-5 flex flex-col justify-end gap-y-6">
         <form
           method="post"
@@ -102,11 +102,9 @@ const Search = () => {
           </button>
         </form>
       </div>
-      <div className="mx-auto w-[65%] h-[52%] flex flex-col gap-y-3 mt-8 overflow-auto">
+      <div className="mx-auto w-[65%] flex flex-col gap-y-3 mt-8 overflow-auto">
         {result.map((item, index) => (
-          <div>
-            <li key={index}>{item}</li>
-          </div>
+          <div key={index}>{item}</div>
         ))}
       </div>
     </div>

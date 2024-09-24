@@ -16,6 +16,19 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+  padding: 10px 0;
+}
+
+::-webkit-scrollbar-track {
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #a855f7;
+  border-radius: 99px;
+}
+
 body {
   margin: 0;
   min-width: 320px;
