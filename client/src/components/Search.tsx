@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
+import { PacmanLoader } from "react-spinners";
 
 const Search = () => {
   const [query, setQuery] = useState("");
   const [qtype, setQtype] = useState("Playlist");
-  const [response, setResponse] = useState("");
+  const [response, setResponse] = useState("loading");
   const [result, setResult] = useState([]);
 
   const fromMilliseconds = (ms) => {
@@ -14,7 +15,7 @@ const Search = () => {
   };
 
   const renderResult = () => {
-    if (response != "") {
+    if (response != "loading" && response != "") {
       const newResults = response.map((item, index) => renderElement(item));
       setResult(newResults);
     }
@@ -46,6 +47,8 @@ const Search = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      setResponse("loading");
+      setResult([]);
       const res = await fetch("/api", {
         method: "POST",
         headers: {
@@ -107,6 +110,15 @@ const Search = () => {
           </button>
         </form>
       </div>
+      {response === "loading" ? (
+        <PacmanLoader
+          color="#a855f7"
+          size={35}
+          className="absolute left-1/3 mt-16"
+        />
+      ) : (
+        ""
+      )}
       <div className="mx-auto w-[65%] flex flex-col gap-y-3 mt-8 overflow-auto">
         {result.map((item, index) => (
           <div key={index}>{item}</div>
