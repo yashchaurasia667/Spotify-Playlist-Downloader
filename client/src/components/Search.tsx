@@ -5,7 +5,7 @@ import { PacmanLoader } from "react-spinners";
 const Search = () => {
   const [query, setQuery] = useState("");
   const [qtype, setQtype] = useState("Playlist");
-  const [response, setResponse] = useState("loading");
+  const [response, setResponse] = useState("");
   const [result, setResult] = useState([]);
 
   const fromMilliseconds = (ms) => {
@@ -15,6 +15,7 @@ const Search = () => {
   };
 
   const renderResult = () => {
+    console.log(response);
     if (response != "loading" && response != "") {
       const newResults = response.map((item, index) => renderElement(item));
       setResult(newResults);

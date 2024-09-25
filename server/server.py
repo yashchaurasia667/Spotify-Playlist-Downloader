@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 
 def create_song_list(tracks):
+  global songs
   songs = []
   for idx, track in enumerate(tracks['tracks']['items']):
     songs.append({
@@ -24,15 +25,11 @@ def hello():
   if data['query']:
     if (data['qtype'].lower() == 'name'):
       tracks = SpotifyToTxt.search_gui(data['query'])
-      return jsonify(success=True, songs=create_song_list(tracks))
+      create_song_list(tracks)
+      return jsonify(success=True, songs=songs)
     if (data['qtype'].lower() == 'playlist'):
       tracks = SpotifyToTxt.search_gui(data['query'], qtype='playlist')
-      print(tracks['name'])
-      # images
-      # print(tracks[0]['items'][0]['track']['album']['images'])
-      # songs = create_song_list(tracks)
-      # return jsonify(success=True, songs=songs)
-      return jsonify(success=True, songs='playlist received')
+      return jsonify(success=True, cover=SpotifyToTxt.playlist_cover, name=SpotifyToTxt.playlist_name, songs=tracks)
 
 
 if __name__ == '__main__':

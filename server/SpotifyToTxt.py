@@ -73,7 +73,9 @@ def getSongs(playlist_link: str):
 
   # slicing the playlist object for the needed stuff
   global playlist_name
+  global playlist_cover
   playlist_name = playlist_dict["name"]
+  playlist_cover = playlist_dict['images'][0]['url']
   no_of_songs = playlist_dict["tracks"]["total"]
 
   # creating a dataframe for storing all the data
@@ -93,9 +95,14 @@ def getSongs(playlist_link: str):
   offset = 0
 
   for i in range(no_of_songs):
-    df.loc[i, "songs"] = clean(items[i - offset]["track"]["name"])
-    df.loc[i, "album"] = items[i - offset]["track"]["album"]["name"]
-    df.loc[i, "release date"] = items[i - offset]["track"]["album"]["release_date"]
+    name = clean(items[i - offset]["track"]["name"])
+    df.loc[i, "songs"] = name
+
+    album = items[i - offset]["track"]["album"]["name"]
+    df.loc[i, "album"] = album
+
+    release_date = items[i - offset]["track"]["album"]["release_date"]
+    df.loc[i, "release date"] = release_date
 
     images = [k["url"] for k in items[i - offset]["track"]["album"]["images"]]
     ",".join(images)
@@ -105,13 +112,19 @@ def getSongs(playlist_link: str):
     artists = ",".join(artists)
     df.loc[i, "artists"] = artists
 
+    total.append({
+        'index': i + 1,
+        'name': name,
+        'artists': artists,
+        'album': album,
+        'images': images[1],
+        'duration': items[i - offset]['track']['duration_ms'],
+    })
+
     if (i + 1) % 100 == 0:
-      total.append(tracks)
       tracks = sp.next(tracks)
       items = tracks["items"]
       offset = i + 1
-
-    total.append(tracks)
 
   global path
   path = os.path.join(os.getcwd(), "queue", f"{playlist_name}.txt")
@@ -129,6 +142,7 @@ def search_gui(name: str, qtype='name') -> pd.DataFrame:
     elif (qtype == 'playlist'):
       return getSongs(name)
   except Exception as e:
+    print(e)
     return json.dumps({'message': 'Something went wrong while searching...', 'success': 'false'})
 
 
