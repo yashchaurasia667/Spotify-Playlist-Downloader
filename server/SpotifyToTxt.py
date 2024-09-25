@@ -88,6 +88,8 @@ def getSongs(playlist_link: str):
   tracks = playlist_dict["tracks"]
   items = tracks["items"]
 
+  total = []
+
   offset = 0
 
   for i in range(no_of_songs):
@@ -104,24 +106,28 @@ def getSongs(playlist_link: str):
     df.loc[i, "artists"] = artists
 
     if (i + 1) % 100 == 0:
+      total.append(tracks)
       tracks = sp.next(tracks)
       items = tracks["items"]
       offset = i + 1
+
+    total.append(tracks)
 
   global path
   path = os.path.join(os.getcwd(), "queue", f"{playlist_name}.txt")
   os.makedirs("queue", exist_ok=True)
   df.to_csv(path, sep="\t", index=False)
+  return total
 
 
 def search_gui(name: str, qtype='name') -> pd.DataFrame:
-  sp = connect_spotify()
   try:
     if (qtype == 'name'):
+      sp = connect_spotify()
       results = sp.search(q=name, type='track', limit=10)
       return results
     elif (qtype == 'playlist'):
-      getSongs(name)
+      return getSongs(name)
   except Exception as e:
     return json.dumps({'message': 'Something went wrong while searching...', 'success': 'false'})
 
