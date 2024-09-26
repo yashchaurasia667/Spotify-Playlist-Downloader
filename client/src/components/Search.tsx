@@ -1,33 +1,44 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { PacmanLoader } from "react-spinners";
 
-const Search = () => {
-  const [query, setQuery] = useState("");
-  const [qtype, setQtype] = useState("Playlist");
+type Song = {
+  album: string;
+  artists: string;
+  duration: number;
+  images: string;
+  name: string;
+};
+
+const Search: React.FC = () => {
+  const [query, setQuery] = useState<string>("");
+  const [qtype, setQtype] = useState<"Playlist" | "Name">("Playlist");
   const [response, setResponse] = useState("");
   const [result, setResult] = useState([]);
 
-  const fromMilliseconds = (ms) => {
-    let min = Math.floor(ms / 60000);
-    let sec = ((ms % 60000) / 1000).toFixed(0);
-    return min + ":" + (sec < 10 ? "0" : "") + sec;
+  const fromMilliseconds = (ms: number) => {
+    const min = Math.floor(ms / 60000);
+    const sec = ((ms % 60000) / 1000).toFixed(0);
+    return `${min}:${sec.padStart(2, "0")}`;
   };
 
-  const renderResult = () => {
-    console.log(response);
-    if (response != "loading" && response != "") {
-      const newResults = response.map((item, index) => renderElement(item));
-      setResult(newResults);
-    }
-  };
-
-  const renderElement = ({ album, artists, duration, images, index, name }) => {
+  const renderElement = (
+    { album, artists, duration, images, name }: Song,
+    index: number
+  ) => {
     return (
-      <div className="font-semibold w-[100%] h-[80px] grid grid-cols-[3fr_1fr_1fr_1fr] items-center rounded-lg bg-[#242424] px-6 py-4">
+      <div
+        key={index}
+        className="font-semibold w-[100%] h-[80px] grid grid-cols-[3fr_1fr_1fr_1fr] items-center rounded-lg bg-[#242424] px-6 py-4"
+      >
         <div className="flex items-center gap-x-4 overflow-hidden">
-          <div>{index}</div>
-          <img src={images} width={"50px"} className="rounded-[10px]" />
+          <div>{index + 1}</div>
+          <img
+            src={images}
+            width={50}
+            className="rounded-[10px]"
+            alt={`${name} cover`}
+          />
           <div>
             <p className="text-purple-500">{name}</p>
             <p className="underline text-ellipsis">{artists}</p>
@@ -47,9 +58,10 @@ const Search = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setResponse("loading");
+    setResult([]);
+
     try {
-      setResponse("loading");
-      setResult([]);
       const res = await fetch("/api", {
         method: "POST",
         headers: {
@@ -62,14 +74,22 @@ const Search = () => {
         setResponse(data.songs);
       }
     } catch (error) {
-      throw new Error(`Something weent wrong... ${error}`);
+      throw new Error(`Error fetching songs: ${error}`);
     }
   };
 
-  useEffect(() => {
-    console.log(response);
-    renderResult();
+  const renderResult = useMemo(() => {
+    // console.log(response);
+    if (response != "loading" && response != "") {
+      const newResults = response.map((item, index) => renderElement(item));
+      setResult(newResults);
+    }
   }, [response]);
+
+  // useEffect(() => {
+  //   console.log(response);
+  //   renderResult();
+  // }, [response]);
 
   return (
     <div className="flex flex-col p-5 h-[100vh]">

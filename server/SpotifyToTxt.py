@@ -105,7 +105,7 @@ def getSongs(playlist_link: str):
     df.loc[i, "release date"] = release_date
 
     images = [k["url"] for k in items[i - offset]["track"]["album"]["images"]]
-    ",".join(images)
+    ", ".join(images)
     df.loc[i, "image"] = images
 
     artists = [clean(k["name"]) for k in items[i - offset]["track"]["artists"]]
