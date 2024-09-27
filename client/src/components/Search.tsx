@@ -1,66 +1,21 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { PacmanLoader } from "react-spinners";
 
-type Song = {
-  album: string;
-  artists: string;
-  duration: number;
-  images: string;
-  name: string;
-};
+import SongTile, { Song } from "./SongTile";
 
 const Search: React.FC = () => {
   const [query, setQuery] = useState<string>("");
   const [qtype, setQtype] = useState<"Playlist" | "Name">("Playlist");
-  const [response, setResponse] = useState("");
-  const [result, setResult] = useState([]);
-
-  const fromMilliseconds = (ms: number) => {
-    const min = Math.floor(ms / 60000);
-    const sec = ((ms % 60000) / 1000).toFixed(0);
-    return `${min}:${sec.padStart(2, "0")}`;
-  };
-
-  const renderElement = (
-    { album, artists, duration, images, name }: Song,
-    index: number
-  ) => {
-    return (
-      <div
-        key={index}
-        className="font-semibold w-[100%] h-[80px] grid grid-cols-[3fr_1fr_1fr_1fr] items-center rounded-lg bg-[#242424] px-6 py-4"
-      >
-        <div className="flex items-center gap-x-4 overflow-hidden">
-          <div>{index + 1}</div>
-          <img
-            src={images}
-            width={50}
-            className="rounded-[10px]"
-            alt={`${name} cover`}
-          />
-          <div>
-            <p className="text-purple-500">{name}</p>
-            <p className="underline text-ellipsis">{artists}</p>
-          </div>
-        </div>
-        <div>{album}</div>
-        <div>{fromMilliseconds(duration)}</div>
-        <button
-          className="text-[#121212] bg-purple-500 hover:bg-purple-400 hover:scale-105 rounded-full px-4 py-2 transition-all"
-          onClick={(e) => e.preventDefault()}
-        >
-          Download
-        </button>
-      </div>
-    );
-  };
+  const [loading, setLoading] = useState(false);
+  const [songs, setSongs] = useState<Song[]>([]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setResponse("loading");
-    setResult([]);
+    if (query == "") return;
 
+    setLoading(true);
+    setSongs([]);
     try {
       const res = await fetch("/api", {
         method: "POST",
@@ -69,27 +24,21 @@ const Search: React.FC = () => {
         },
         body: JSON.stringify({ query, qtype }),
       });
+
       const data = await res.json();
       if (data.success) {
-        setResponse(data.songs);
-      }
+        setSongs(data.songs);
+      } else throw new Error("Check the playlist link");
     } catch (error) {
-      throw new Error(`Error fetching songs: ${error}`);
+      console.error(`Error fetching songs: ${error}`);
+    } finally {
+      setLoading(false);
     }
   };
 
   const renderResult = useMemo(() => {
-    // console.log(response);
-    if (response != "loading" && response != "") {
-      const newResults = response.map((item, index) => renderElement(item));
-      setResult(newResults);
-    }
-  }, [response]);
-
-  // useEffect(() => {
-  //   console.log(response);
-  //   renderResult();
-  // }, [response]);
+    return songs.map((song, index) => <div key={index}>{SongTile(song)}</div>);
+  }, [songs]);
 
   return (
     <div className="flex flex-col p-5 h-[100vh]">
@@ -131,20 +80,15 @@ const Search: React.FC = () => {
           </button>
         </form>
       </div>
-      {response === "loading" ? (
+      {loading ? (
         <PacmanLoader
           color="#a855f7"
           size={35}
           className="absolute left-1/3 mt-16"
         />
       ) : (
-        ""
+        <div className="mx-auto w-[65%] mt-8 overflow-auto">{renderResult}</div>
       )}
-      <div className="mx-auto w-[65%] flex flex-col gap-y-3 mt-8 overflow-auto">
-        {result.map((item, index) => (
-          <div key={index}>{item}</div>
-        ))}
-      </div>
     </div>
   );
 };

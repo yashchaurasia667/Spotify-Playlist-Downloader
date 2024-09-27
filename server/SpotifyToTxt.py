@@ -142,8 +142,12 @@ def search_gui(name: str, qtype='name') -> pd.DataFrame:
     elif (qtype == 'playlist'):
       return getSongs(name)
   except Exception as e:
-    print(e)
-    return json.dumps({'message': 'Something went wrong while searching...', 'success': 'false'})
+    print(type(e))
+    return False
+    # return json.dump({
+    #     'message': 'Something went wrong while searching...',
+    #     'success': False,
+    # })
 
 
 def search_spotify(names: list) -> list:
