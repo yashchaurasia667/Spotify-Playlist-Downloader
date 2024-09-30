@@ -10,7 +10,7 @@ const Login = () => {
   const [id, setId] = useState("");
   const [secret, setSecret] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const res = await fetch("/api", {
@@ -22,8 +22,9 @@ const Login = () => {
       });
 
       const data = await res.json();
-      // if (data.success) {
-      // }
+      if (data?.success) {
+        console.log("hello");
+      }
     } catch (error) {
       throw new Error(`Something went wrong... ${error}`);
     }
@@ -32,7 +33,7 @@ const Login = () => {
   return (
     <div className="w-[100%] flex flex-col justify-center">
       <p className="font-bold text-3xl mx-auto mb-10">Log In</p>
-      <form className="flex flex-col w-[100%]">
+      <form onSubmit={handleSubmit} className="flex flex-col w-[100%]">
         <input
           type="text"
           value={id}
@@ -47,7 +48,7 @@ const Login = () => {
           placeholder="CLIENT SECRET"
           className={inputClass}
         />
-        <button className={buttonClass} onClick={(e) => handleSubmit(e)}>
+        <button type="submit" className={buttonClass}>
           Login
         </button>
       </form>

@@ -1,4 +1,0 @@
-songs	artists	album	release date	image
-Till Forever Falls Apart	Ashe,FINNEAS	Till Forever Falls Apart	2021-03-02	['https://i.scdn.co/image/ab67616d0000b2739c6c37d0dd4c9ad3b23662fd', 'https://i.scdn.co/image/ab67616d00001e029c6c37d0dd4c9ad3b23662fd', 'https://i.scdn.co/image/ab67616d000048519c6c37d0dd4c9ad3b23662fd']
-There Is a Light That Never Goes Out - 2011 Remaster	The Smiths	The Queen Is Dead	1986-06-16	['https://i.scdn.co/image/ab67616d0000b273ada101c2e9e97feb8fae37a9', 'https://i.scdn.co/image/ab67616d00001e02ada101c2e9e97feb8fae37a9', 'https://i.scdn.co/image/ab67616d00004851ada101c2e9e97feb8fae37a9']
-Chaar Kadam	Shaan,Shreya Ghoshal	Pk	2014-11-17	['https://i.scdn.co/image/ab67616d0000b27319fa40d5313010b1a2d971dc', 'https://i.scdn.co/image/ab67616d00001e0219fa40d5313010b1a2d971dc', 'https://i.scdn.co/image/ab67616d0000485119fa40d5313010b1a2d971dc']

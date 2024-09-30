@@ -1,5 +1,3 @@
-import React from "react";
-
 import { FaFolder } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 

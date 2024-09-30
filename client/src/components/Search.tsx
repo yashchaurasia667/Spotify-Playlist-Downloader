@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { FaArrowDown, FaChevronDown } from "react-icons/fa";
+import { FaChevronDown } from "react-icons/fa";
 import { PacmanLoader } from "react-spinners";
 
 import SongTile, { Song } from "./SongTile";
