@@ -1,3 +1,5 @@
+import { shell } from "electron";
+
 export type Song = {
   album: string;
   artists: string;
@@ -12,6 +14,18 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
     const min = Math.floor(ms / 60000);
     const sec = ((ms % 60000) / 1000).toFixed(0);
     return `${min}:${sec.padStart(2, "0")}`;
+  };
+
+  const handleDownload = async (
+    e: React.MouseEvent<HTMLButtonElement>,
+    path: string
+  ) => {
+    e.preventDefault();
+    console.log(path);
+    // const res = await shell.openPath(path);
+    // if (res) {
+    //   console.error("something went wrong");
+    // }
   };
 
   return (
@@ -35,7 +49,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
       <div>{fromMilliseconds(duration)}</div>
       <button
         className="text-[#121212] bg-purple-500 hover:bg-purple-400 hover:scale-105 rounded-full px-4 py-2 transition-all"
-        onClick={(e) => e.preventDefault()}
+        onClick={(e) => handleDownload(e, "/")}
       >
         Download
       </button>

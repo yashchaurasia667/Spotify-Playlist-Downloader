@@ -32,12 +32,12 @@ const Search: React.FC = () => {
 
       const data = await res.json();
       if (data.success) {
-        if (qtype == "Playlist")
+        if (qtype == "Playlist") {
           setPlaylist({
             cover: data.cover,
             name: data.name,
           });
-        else {
+        } else {
           setPlaylist((prev) => ({
             ...prev,
             name: "",

@@ -39,7 +39,7 @@ def searchPlaylists(query):
 
 
 @app.route('/', methods=['POST'])
-def hello():
+def search():
   data = request.get_json()
   if data['query']:
     if (data['qtype'].lower() == 'name'):
@@ -49,6 +49,9 @@ def hello():
     else:
       return jsonify(success=False, message="You can only search for a playlist or a name")
 
+
+# @app.route('/download', methods=['POST'])
+# def download():
 
 if __name__ == '__main__':
   app.run(debug=True)
