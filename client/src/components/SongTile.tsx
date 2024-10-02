@@ -22,10 +22,10 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
   ) => {
     e.preventDefault();
     console.log(path);
-    // const res = await shell.openPath(path);
-    // if (res) {
-    //   console.error("something went wrong");
-    // }
+    const res = await shell.openPath(path);
+    if (res) {
+      console.error("something went wrong");
+    }
   };
 
   return (
