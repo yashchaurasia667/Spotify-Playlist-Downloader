@@ -10,12 +10,7 @@ export type Song = {
 };
 
 const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
-  const [selectedFile, setSelectedFile] = useState<string | null>();
-  const handleOpenDialog = async () => {
-    const res = await window.electronAPI.openDialog();
-    if (res && res.length > 0) setSelectedFile(res[0]);
-    return selectedFile;
-  };
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
   const fromMilliseconds = (ms: number) => {
     const min = Math.floor(ms / 60000);
@@ -29,7 +24,12 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
   ) => {
     e.preventDefault();
     console.log(path);
-    handleOpenDialog();
+    try {
+      const res = await window.electronAPI.openDialog();
+      if (res && res.length > 0) setSelectedFile(res[0]);
+    } catch (error) {
+      console.error(`Something went wrong opening file dialog: ${error}`);
+    }
   };
 
   return (

@@ -1,4 +1,4 @@
-import { ipcMain, dialog, app, BrowserWindow } from "electron";
+import { app, BrowserWindow, dialog } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -15,7 +15,7 @@ function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs")
+      preload: path.join(__dirname, "preload.ts")
     }
   });
   win.webContents.on("did-finish-load", () => {
@@ -27,12 +27,6 @@ function createWindow() {
     win.loadFile(path.join(RENDERER_DIST, "index.html"));
   }
 }
-ipcMain.handle("dialog:open", async () => {
-  const result = await dialog.showOpenDialog({
-    properties: ["openFile"]
-  });
-  return result.filePaths;
-});
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -44,7 +38,10 @@ app.on("activate", () => {
     createWindow();
   }
 });
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  console.log(dialog.showOpenDialog({ properties: ["openFile"] }));
+});
 export {
   MAIN_DIST,
   RENDERER_DIST,

@@ -20,8 +20,12 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     const [channel, ...omit] = args;
     return ipcRenderer.invoke(channel, ...omit);
   },
-  openDialog: () => ipcRenderer.invoke("dialog:open"),
+  // openDialog: () => ipcRenderer.invoke("dialog:open"),
 
   // You can expose other APTs you need here.
   // ...
+});
+
+contextBridge.exposeInMainWorld("electronAPI", {
+  openDialog: () => ipcRenderer.invoke("dialog:open"),
 });
