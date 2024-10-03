@@ -1,4 +1,4 @@
-import { shell } from "electron";
+import { useState } from "react";
 
 export type Song = {
   album: string;
@@ -10,6 +10,13 @@ export type Song = {
 };
 
 const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
+  const [selectedFile, setSelectedFile] = useState<string | null>();
+  const handleOpenDialog = async () => {
+    const res = await window.electronAPI.openDialog();
+    if (res && res.length > 0) setSelectedFile(res[0]);
+    return selectedFile;
+  };
+
   const fromMilliseconds = (ms: number) => {
     const min = Math.floor(ms / 60000);
     const sec = ((ms % 60000) / 1000).toFixed(0);
@@ -22,10 +29,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
   ) => {
     e.preventDefault();
     console.log(path);
-    const res = await shell.openPath(path);
-    if (res) {
-      console.error("something went wrong");
-    }
+    handleOpenDialog();
   };
 
   return (
