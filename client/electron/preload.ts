@@ -1,4 +1,8 @@
-import { ipcRenderer, contextBridge } from "electron";
+import { ipcRenderer, contextBridge, dialog } from "electron";
+
+const WINDOW_API = {
+  greet: (message: string) => ipcRenderer.send("greet", message),
+};
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld("ipcRenderer", {
@@ -20,12 +24,12 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
     const [channel, ...omit] = args;
     return ipcRenderer.invoke(channel, ...omit);
   },
-  // openDialog: () => ipcRenderer.invoke("dialog:open"),
 
   // You can expose other APTs you need here.
   // ...
 });
 
-contextBridge.exposeInMainWorld("electronAPI", {
-  openDialog: () => ipcRenderer.invoke("dialog:open"),
+contextBridge.exposeInMainWorld("api", {
+  openDownloadDialog: () =>
+    dialog.showOpenDialog({ properties: ["openDirectory"] }),
 });

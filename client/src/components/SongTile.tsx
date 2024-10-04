@@ -25,7 +25,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
     e.preventDefault();
     console.log(path);
     try {
-      const res = await window.electronAPI.openDialog();
+      const res = await window.api.openDownloadDialog();
       if (res && res.length > 0) setSelectedFile(res[0]);
     } catch (error) {
       console.error(`Something went wrong opening file dialog: ${error}`);

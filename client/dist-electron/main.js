@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -15,7 +15,7 @@ function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     autoHideMenuBar: true,
     webPreferences: {
-      preload: path.join(__dirname, "preload.ts")
+      preload: path.join(__dirname, "preload.mjs")
     }
   });
   win.webContents.on("did-finish-load", () => {
@@ -38,9 +38,11 @@ app.on("activate", () => {
     createWindow();
   }
 });
+ipcMain.on("greet", (event, args) => {
+  console.log(args);
+});
 app.whenReady().then(() => {
   createWindow();
-  console.log(dialog.showOpenDialog({ properties: ["openFile"] }));
 });
 export {
   MAIN_DIST,
