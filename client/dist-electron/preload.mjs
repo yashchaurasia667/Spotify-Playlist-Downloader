@@ -1,8 +1,5 @@
 "use strict";
 const electron = require("electron");
-const WINDOW_API = {
-  greet: (message) => electron.ipcRenderer.send("greet", message)
-};
 electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   on(...args) {
     const [channel, listener] = args;
@@ -26,4 +23,6 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   // You can expose other APTs you need here.
   // ...
 });
-electron.contextBridge.exposeInMainWorld("api", WINDOW_API);
+electron.contextBridge.exposeInMainWorld("api", {
+  openDownloadDialog: () => electron.ipcRenderer.send("openDownloadDialog", "gugugaga")
+});

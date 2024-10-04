@@ -53,7 +53,7 @@ const Search: React.FC = () => {
   };
 
   const renderResult = useMemo(() => {
-    return songs.map((song, index) => <div key={index}>{SongTile(song)}</div>);
+    return songs.map((song, index) => <SongTile key={index} {...song} />);
   }, [songs]);
 
   return (

@@ -68,8 +68,14 @@ app.on("activate", () => {
   }
 });
 
-ipcMain.on("greet", (event, args) => {
+// ipcMain.on("greet", (event, args) => {
+//   console.log(args);
+// });
+
+ipcMain.on("openDownloadDialog", async (event, args) => {
   console.log(args);
+  const res = await dialog.showOpenDialog({ properties: ["openDirectory"] });
+  return res;
 });
 
 app.whenReady().then(() => {

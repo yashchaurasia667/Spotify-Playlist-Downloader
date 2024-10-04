@@ -10,7 +10,7 @@ export type Song = {
 };
 
 const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<string>("");
 
   const fromMilliseconds = (ms: number) => {
     const min = Math.floor(ms / 60000);
@@ -19,13 +19,13 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
   };
 
   const handleDownload = async (
-    e: React.MouseEvent<HTMLButtonElement>,
-    path: string
+    e: React.MouseEvent<HTMLButtonElement>
+    // path: string
   ) => {
     e.preventDefault();
-    console.log(path);
     try {
       const res = await window.api.openDownloadDialog();
+      console.log(res);
       if (res && res.length > 0) setSelectedFile(res[0]);
     } catch (error) {
       console.error(`Something went wrong opening file dialog: ${error}`);
@@ -53,7 +53,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
       <div>{fromMilliseconds(duration)}</div>
       <button
         className="text-[#121212] bg-purple-500 hover:bg-purple-400 hover:scale-105 rounded-full px-4 py-2 transition-all"
-        onClick={(e) => handleDownload(e, "/")}
+        onClick={(e) => handleDownload(e)}
       >
         Download
       </button>
