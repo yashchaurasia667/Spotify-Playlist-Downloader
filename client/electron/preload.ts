@@ -1,4 +1,4 @@
-import { ipcRenderer, contextBridge, dialog } from "electron";
+import { ipcRenderer, contextBridge } from "electron";
 
 // const WINDOW_API = {
 //   greet: (message: string) => ipcRenderer.send("greet", message),
@@ -30,5 +30,6 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
 });
 
 contextBridge.exposeInMainWorld("api", {
-  openDownloadDialog: () => ipcRenderer.send("openDownloadDialog", "gugugaga"),
+  openDownloadDialog: () =>
+    ipcRenderer.invoke("openDownloadDialog", "opening folder dialog"),
 });

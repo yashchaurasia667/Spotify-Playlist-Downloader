@@ -7,7 +7,7 @@ import PlaylistTile from "./PlaylistTile";
 
 const Search: React.FC = () => {
   const [query, setQuery] = useState<string>("");
-  const [qtype, setQtype] = useState<"Playlist" | "Name">("Playlist");
+  const [qtype, setQtype] = useState<"Playlist" | "Name">("Name");
   const [loading, setLoading] = useState(false);
   const [songs, setSongs] = useState<Song[]>([]);
   const [playlist, setPlaylist] = useState({
@@ -70,8 +70,8 @@ const Search: React.FC = () => {
               <FaChevronDown />
             </div>
             <div className="dropdown_content">
-              <div onClick={() => setQtype("Playlist")}>Playlist</div>
               <div onClick={() => setQtype("Name")}>Name</div>
+              <div onClick={() => setQtype("Playlist")}>Playlist</div>
             </div>
           </div>
 
@@ -109,7 +109,7 @@ const Search: React.FC = () => {
           } rounded-xl w-[90%] px-3 mx-auto mt-8 overflow-auto`}
         >
           <div className={playlist.name == "" ? "hidden" : ""}>
-            {PlaylistTile(playlist)}
+            <PlaylistTile {...playlist} />
           </div>
           <div
             className={`${

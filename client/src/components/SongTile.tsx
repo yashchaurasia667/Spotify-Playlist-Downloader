@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export type Song = {
   album: string;
   artists: string;
@@ -10,23 +8,22 @@ export type Song = {
 };
 
 const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
-  const [selectedFile, setSelectedFile] = useState<string>("");
-
   const fromMilliseconds = (ms: number) => {
     const min = Math.floor(ms / 60000);
     const sec = ((ms % 60000) / 1000).toFixed(0);
     return `${min}:${sec.padStart(2, "0")}`;
   };
 
-  const handleDownload = async (
-    e: React.MouseEvent<HTMLButtonElement>
-    // path: string
-  ) => {
+  const handleDownload = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
+    if (localStorage.getItem("downloadPath")) {
+      console.log(`Download Path: ${localStorage.getItem("downloadPath")}`);
+      return;
+    }
     try {
       const res = await window.api.openDownloadDialog();
-      console.log(res);
-      if (res && res.length > 0) setSelectedFile(res[0]);
+      if (res && !res?.canceled)
+        localStorage.setItem("downloadPath", res.filePaths[0]);
     } catch (error) {
       console.error(`Something went wrong opening file dialog: ${error}`);
     }

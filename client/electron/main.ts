@@ -1,9 +1,9 @@
 import { app, BrowserWindow, ipcMain, dialog } from "electron";
-import { createRequire } from "node:module";
+// import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const require = createRequire(import.meta.url);
+// const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // The built directory structure
@@ -68,17 +68,9 @@ app.on("activate", () => {
   }
 });
 
-// ipcMain.on("greet", (event, args) => {
-//   console.log(args);
-// });
-
-ipcMain.on("openDownloadDialog", async (event, args) => {
-  console.log(args);
+ipcMain.handle("openDownloadDialog", async () => {
   const res = await dialog.showOpenDialog({ properties: ["openDirectory"] });
   return res;
 });
 
-app.whenReady().then(() => {
-  createWindow();
-  // dialog.showOpenDialog({ properties: ["openDirectory"] });
-});
+app.whenReady().then(createWindow);
