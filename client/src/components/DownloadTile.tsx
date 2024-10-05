@@ -1,7 +1,7 @@
 import { FaFolder } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 
-const Tile = ({
+const DownloadTile = ({
   title = "Enter title",
   downloadPath = "path to download",
   coverPath = "path to album cover",
@@ -26,4 +26,4 @@ const Tile = ({
   );
 };
 
-export default Tile;
+export default DownloadTile;
