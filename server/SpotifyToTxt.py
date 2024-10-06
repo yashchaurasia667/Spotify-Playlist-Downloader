@@ -49,10 +49,10 @@ def clean(name: str) -> str:
   return cleaned_name
 
 
-def connect_spotify():
+def connect_spotify(id, secret):
   try:
     # connecting with spotify API
-    auth_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+    auth_manager = SpotifyClientCredentials(client_id=id or CLIENT_ID, client_secret=secret or CLIENT_SECRET)
     sp = spotipy.Spotify(auth_manager=auth_manager)
     test_playlist = sp.playlist("37i9dQZF1DXcBWIGoYBM5M")
 

@@ -50,8 +50,17 @@ def search():
       return jsonify(success=False, message="You can only search for a playlist or a name")
 
 
-# @app.route('/download', methods=['POST'])
-# def download():
+@app.route('/connect', methods=['POST'])
+def connect():
+  data = request.get_json()
+  if (data):
+    try:
+      SpotifyToTxt.connect_spotify(data['id'], data['secret'])
+    except Exception as e:
+      return jsonify(success=False, message="Couldn't connec to Spotify API check your id and secret and try again")
+    print(data)
+  return 'hello'
+
 
 if __name__ == '__main__':
   app.run(debug=True)
