@@ -5,6 +5,7 @@ import { FaArrowDown, FaQuestion, FaSearch, FaSpotify } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 
 const Navbar = () => {
+  const [keepOpen, setKeepOpen] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const pages = {
@@ -36,9 +37,15 @@ const Navbar = () => {
 
   return (
     <div
-      className="flex items-center pl-4 pr-4 relative my-3 rounded-xl bg-[#242424] w-[95px] hover:w-[210px] transition-all overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className={`flex items-center pl-4 pr-4 relative my-3 rounded-xl bg-[#242424] ${
+        keepOpen ? "w-[210px]" : "w-[95px] hover:w-[210px]"
+      } transition-all overflow-hidden`}
+      onMouseEnter={() =>
+        !keepOpen ? setIsHovered(true) : setIsHovered(isHovered)
+      }
+      onMouseLeave={() =>
+        !keepOpen ? setIsHovered(false) : setIsHovered(isHovered)
+      }
     >
       <div className="flex flex-col gap-y-4">
         <FaSpotify
@@ -57,6 +64,20 @@ const Navbar = () => {
         <NavLink to={"/help"} className={"navlink"}>
           {pages.help}
         </NavLink>
+      </div>
+      <div className="absolute bottom-5">
+        <div
+          className={`bottom-0 mt-2 ${
+            keepOpen ? "bg-purple-400" : "bg-[#acacac]"
+          }  h-[35px] w-[60px] px-7 py-3 rounded-full outline-none border-[#242424] border-2 relative transition-all duration-150`}
+          onClick={() => setKeepOpen((prev) => !prev)}
+        >
+          <div
+            className={`absolute top-1/2 -translate-y-1/2 toggle h-[25px] w-[25px] bg-[#242424] rounded-full transition-all ${
+              keepOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+          ></div>
+        </div>
       </div>
     </div>
   );

@@ -8,16 +8,16 @@ const Login = () => {
 
   const [id, setId] = useState<string>("");
   const [secret, setSecret] = useState<string>("");
-  // const [remember, setRemember] = useState<boolean>(true);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      localStorage.setItem("credentials", JSON.stringify({ id, secret }));
-      console.log("Credentials set");
-    } catch (error) {
-      console.error(`Something went wrong while logging in: ${error}`);
-    }
+    if (id != "" && secret != "")
+      try {
+        localStorage.setItem("credentials", JSON.stringify({ id, secret }));
+        console.log("Credentials set");
+      } catch (error) {
+        console.error(`Something went wrong while logging in: ${error}`);
+      }
   };
 
   return (
@@ -41,18 +41,6 @@ const Login = () => {
           placeholder="CLIENT SECRET"
           className={inputClass}
         />
-        {/* <div
-          className={`mt-2 ${
-            remember ? "bg-purple-400" : "bg-[#acacac]"
-          }  h-[35px] w-[60px] px-7 py-3 rounded-full outline-none border-[#242424] border-2 relative transition-all duration-150`}
-          onClick={() => setRemember((prev) => !prev)}
-        >
-          <div
-            className={`absolute top-1/2 -translate-y-1/2 toggle h-[25px] w-[25px] bg-[#242424] rounded-full transition-all ${
-              remember ? "translate-x-0" : "-translate-x-full"
-            }`}
-          ></div>
-        </div> */}
         <button type="submit" className={buttonClass}>
           Login
         </button>
