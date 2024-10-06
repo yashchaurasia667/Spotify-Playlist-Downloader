@@ -58,10 +58,10 @@ const Search: React.FC = () => {
 
   return (
     <div className="grid grid-rows-[2fr_5fr] p-5 h-[100vh]">
-      <div className="w-[100%] h-[40%] p-5 self-end flex flex-col justify-end gap-y-6">
+      <div className="w-[100%] h-[40%] p-5 self-end">
         <form
           method="post"
-          className="flex lg:flex-row flex-col justify-center items-center gap-x-3 gap-y-6"
+          className="flex md:flex-row flex-col justify-center items-center gap-x-3 gap-y-6"
           onSubmit={handleSubmit}
         >
           <div className="dropdown">
@@ -78,7 +78,7 @@ const Search: React.FC = () => {
           <input
             type="text"
             name="link"
-            className="bg-[#242424] w-[90%] md:w-[70%] lg:w-[40%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all"
+            className="bg-[#242424] w-[90%] md:w-[40%] px-8 py-3 rounded-full outline-none border-2 border-[#acacac] hover:border-white focus:border-white focus:border-[3px] transition-all"
             placeholder={
               qtype === "Name"
                 ? "Name of the song"
@@ -87,7 +87,6 @@ const Search: React.FC = () => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
-
           <button
             type="submit"
             className="font-semibold bg-purple-400 text-[#121212] rounded-full px-10 py-4 hover:scale-105 hover:bg-purple-300 transition-all"
