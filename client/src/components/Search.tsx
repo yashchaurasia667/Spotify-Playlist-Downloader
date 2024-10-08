@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { PacmanLoader } from "react-spinners";
 
@@ -55,6 +55,33 @@ const Search: React.FC = () => {
   const renderResult = useMemo(() => {
     return songs.map((song, index) => <SongTile key={index} {...song} />);
   }, [songs]);
+
+  const connectSpotify = async () => {
+    const creds = localStorage.getItem("credentials");
+    if (creds) {
+      console.log(creds);
+      try {
+        const res = await fetch("/api/connect", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: creds,
+        });
+        const data = await res.json();
+        if (data.success) console.log(data);
+        else throw new Error("403");
+      } catch (error) {
+        if (error instanceof Error && error.message == "403")
+          console.error(`Check your spotify credentials`);
+        else console.error(`Couldn't connect to Spotify: ${error}`);
+      }
+    } else console.error("Could not find Credentials in localStorage");
+  };
+
+  useEffect(() => {
+    connectSpotify();
+  }, []);
 
   return (
     <div className="grid grid-rows-[2fr_5fr] p-5 h-[100vh]">

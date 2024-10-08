@@ -55,11 +55,12 @@ def connect():
   data = request.get_json()
   if (data):
     try:
+      # data[0] is id and data[1] is secret
+      print(data)
       SpotifyToTxt.connect_spotify(data['id'], data['secret'])
     except Exception as e:
-      return jsonify(success=False, message="Couldn't connec to Spotify API check your id and secret and try again")
-    print(data)
-  return 'hello'
+      return jsonify(success=False, message="Couldn't connect to Spotify API check your id and secret and try again")
+  return jsonify(success=True, message='Successfully connected to the Spotify API')
 
 
 if __name__ == '__main__':
