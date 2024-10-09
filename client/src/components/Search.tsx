@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { PacmanLoader } from "react-spinners";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import SongTile, { Song } from "./SongTile";
 import PlaylistTile from "./PlaylistTile";
@@ -69,8 +71,15 @@ const Search: React.FC = () => {
           body: creds,
         });
         const data = await res.json();
-        if (data.success) console.log(data);
-        else throw new Error("403");
+        if (data.success) {
+          console.log(data);
+          toast.success("Successfully connect to Spotify API");
+        } else {
+          toast.error(
+            "Couldn't connect to Spotify check your Credentials and internet and try again..."
+          );
+          throw new Error("403");
+        }
       } catch (error) {
         if (error instanceof Error && error.message == "403")
           console.error(`Check your spotify credentials`);
@@ -86,6 +95,12 @@ const Search: React.FC = () => {
   return (
     <div className="grid grid-rows-[2fr_5fr] p-5 h-[100vh]">
       <div className="w-[100%] h-[40%] p-5 self-end">
+        <ToastContainer
+          position="top-right"
+          theme="dark"
+          pauseOnHover
+          pauseOnFocusLoss
+        />
         <form
           method="post"
           className="flex md:flex-row flex-col justify-center items-center gap-x-3 gap-y-6"

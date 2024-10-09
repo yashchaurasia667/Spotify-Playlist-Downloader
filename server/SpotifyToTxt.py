@@ -52,11 +52,11 @@ def clean(name: str) -> str:
 def connect_spotify(id='', secret=''):
   try:
     # connecting with spotify API
-    if id and secret:
-      print(f"spotifytotxt: {id}, {secret}")
-      auth_manager = SpotifyClientCredentials(client_id=id, client_secret=secret)
-    else:
-      auth_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+    # if id and secret:
+    #   auth_manager = SpotifyClientCredentials(client_id='gugu', client_secret='gaga')
+    # else:
+    #   auth_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
+    auth_manager = SpotifyClientCredentials(client_id=id or CLIENT_ID, client_secret=secret or CLIENT_SECRET)
     sp = spotipy.Spotify(auth_manager=auth_manager)
     test_playlist = sp.playlist("37i9dQZF1DXcBWIGoYBM5M")
 
