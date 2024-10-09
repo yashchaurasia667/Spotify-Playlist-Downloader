@@ -70,8 +70,9 @@ def connect_spotify(id='', secret=''):
     cprint(text="Check your internet or change your .env file ", color="red")
 
 
-def getSongs(playlist_link: str):
-  sp = connect_spotify()
+def getSongs(playlist_link: str, sp=''):
+  if not sp:
+    sp = connect_spotify()
   # playlist_link = "https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX"
   playlist_dict = sp.playlist(playlist_link)
 

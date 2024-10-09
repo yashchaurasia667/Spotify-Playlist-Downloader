@@ -17,6 +17,10 @@ const Search: React.FC = () => {
     name: "",
   });
 
+  const toastStyle = {
+    backgroundColor: "#232323",
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (query == "") return;
@@ -73,17 +77,22 @@ const Search: React.FC = () => {
         const data = await res.json();
         if (data.success) {
           console.log(data);
-          toast.success("Successfully connect to Spotify API");
+          toast.success("Successfully connect to Spotify API", {
+            style: toastStyle,
+          });
         } else {
           toast.error(
-            "Couldn't connect to Spotify check your Credentials and internet and try again..."
+            "Couldn't connect to Spotify check your Credentials and internet and try again...",
+            {}
           );
           throw new Error("403");
         }
       } catch (error) {
         if (error instanceof Error && error.message == "403")
-          console.error(`Check your spotify credentials`);
-        else console.error(`Couldn't connect to Spotify: ${error}`);
+          toast.error("Check your spotify credentials", {
+            style: toastStyle,
+          });
+        else toast.error("Couldn't connect to Spotify", { style: toastStyle });
       }
     } else console.error("Could not find Credentials in localStorage");
   };
