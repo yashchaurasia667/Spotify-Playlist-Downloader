@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 
 import MainLayout from "./Layouts/MainLayout";
-import Search from "./components/Search";
+import Search from "./components/SearchBar";
 import Downloads from "./components/Downloads";
 import Login from "./components/Login";
 import Help from "./components/Help";

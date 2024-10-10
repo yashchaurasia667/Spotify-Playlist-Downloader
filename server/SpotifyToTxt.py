@@ -68,6 +68,7 @@ def connect_spotify(id='', secret=''):
   except Exception as e:
     cprint(text="Could not connect to Spotify..", color="red")
     cprint(text="Check your internet or change your .env file ", color="red")
+    return False
 
 
 def getSongs(playlist_link: str, sp=''):

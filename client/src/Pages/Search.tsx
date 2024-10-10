@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 import { PacmanLoader } from "react-spinners";
 import { ToastContainer, toast } from "react-toastify";
@@ -8,54 +8,8 @@ import SongTile, { Song } from "./SongTile";
 import PlaylistTile from "./PlaylistTile";
 
 const Search: React.FC = () => {
-  const [query, setQuery] = useState<string>("");
-  const [qtype, setQtype] = useState<"Playlist" | "Name">("Name");
-  const [loading, setLoading] = useState(false);
-  const [songs, setSongs] = useState<Song[]>([]);
-  const [playlist, setPlaylist] = useState({
-    cover: "",
-    name: "",
-  });
-
   const toastStyle = {
     backgroundColor: "#232323",
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (query == "") return;
-
-    setLoading(true);
-    setSongs([]);
-    try {
-      const res = await fetch("/api", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ query, qtype }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        if (qtype == "Playlist") {
-          setPlaylist({
-            cover: data.cover,
-            name: data.name,
-          });
-        } else {
-          setPlaylist((prev) => ({
-            ...prev,
-            name: "",
-          }));
-        }
-        setSongs(data.songs);
-      } else throw new Error("Check the playlist link");
-    } catch (error) {
-      console.error(`Error fetching songs: ${error}`);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const renderResult = useMemo(() => {
@@ -80,26 +34,14 @@ const Search: React.FC = () => {
           toast.success("Successfully connect to Spotify API", {
             style: toastStyle,
           });
-        } else {
-          toast.error(
-            "Couldn't connect to Spotify check your Credentials and internet and try again...",
-            {}
-          );
-          throw new Error("403");
-        }
+        } else throw new Error("403");
       } catch (error) {
-        if (error instanceof Error && error.message == "403")
-          toast.error("Check your spotify credentials", {
-            style: toastStyle,
-          });
-        else toast.error("Couldn't connect to Spotify", { style: toastStyle });
+        toast.error("Couldn't connect to Spotify", { style: toastStyle });
       }
     } else console.error("Could not find Credentials in localStorage");
   };
 
-  useEffect(() => {
-    connectSpotify();
-  }, []);
+  connectSpotify();
 
   return (
     <div className="grid grid-rows-[2fr_5fr] p-5 h-[100vh]">

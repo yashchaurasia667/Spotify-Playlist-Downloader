@@ -59,6 +59,8 @@ def connect():
       print(data)
       global SP
       SP = SpotifyToTxt.connect_spotify(data['id'], data['secret'])
+      if not SP:
+        raise Exception('could not connect to spotify')
     except Exception as e:
       return jsonify(success=False, message="Couldn't connect to Spotify API check your id and secret and try again")
   return jsonify(success=True, message='Successfully connected to the Spotify API')
