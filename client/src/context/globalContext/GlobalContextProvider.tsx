@@ -1,7 +1,15 @@
-import { useContext } from "react";
+import React, { useState, ReactNode } from "react";
 import GlobalContext from "./GlobalContext";
 
-const GlobalContextProvider = () => {
+import { Song } from "../../types";
+
+interface GlobalContextProviderProps {
+  children: ReactNode;
+}
+
+const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
+  children,
+}) => {
   const [query, setQuery] = useState<string>("");
   const [qtype, setQtype] = useState<"Playlist" | "Name">("Name");
   const [loading, setLoading] = useState(false);

@@ -21,6 +21,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "electron", "src/Layouts/types"],
+  "include": ["src", "electron", "src/types"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

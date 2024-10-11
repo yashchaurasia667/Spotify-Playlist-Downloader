@@ -1,11 +1,4 @@
-export type Song = {
-  album: string;
-  artists: string;
-  duration: number;
-  images: string;
-  index: number;
-  name: string;
-};
+import { Song } from "../types";
 
 const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
   const fromMilliseconds = (ms: number) => {
