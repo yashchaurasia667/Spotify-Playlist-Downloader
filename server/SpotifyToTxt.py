@@ -4,7 +4,6 @@ from termcolor import cprint
 import pandas as pd
 import unicodedata
 import spotipy
-import json
 import os
 import re
 
@@ -27,6 +26,7 @@ def set_credentials():
   with open(".env", "w") as f:
     f.write(f"CLIENT_ID={id}\n")
     f.write(f"CLIENT_SECRET={secret}")
+  exit()
 
 
 def clean(name: str) -> str:
@@ -52,10 +52,6 @@ def clean(name: str) -> str:
 def connect_spotify(id='', secret=''):
   try:
     # connecting with spotify API
-    # if id and secret:
-    #   auth_manager = SpotifyClientCredentials(client_id='gugu', client_secret='gaga')
-    # else:
-    #   auth_manager = SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
     auth_manager = SpotifyClientCredentials(client_id=id or CLIENT_ID, client_secret=secret or CLIENT_SECRET)
     sp = spotipy.Spotify(auth_manager=auth_manager)
     test_playlist = sp.playlist("37i9dQZF1DXcBWIGoYBM5M")

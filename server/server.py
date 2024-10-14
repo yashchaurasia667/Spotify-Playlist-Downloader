@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify
 import SpotifyToTxt
+import TxtToMp3
 
 app = Flask(__name__)
+
+qtype = ''
 
 
 def create_song_list(tracks):
@@ -41,10 +44,13 @@ def searchPlaylists(query):
 @app.route('/', methods=['POST'])
 def search():
   data = request.get_json()
-  if data['query']:
+  if data['query'] and SP:
+    global qtype
     if (data['qtype'].lower() == 'name'):
+      qtype = 'name'
       return searchNames(data['query'])
     elif (data['qtype'].lower() == 'playlist'):
+      qtype = 'playlist'
       return searchPlaylists(data['query'])
     else:
       return jsonify(success=False, message="You can only search for a playlist or a name")
@@ -61,9 +67,17 @@ def connect():
       SP = SpotifyToTxt.connect_spotify(data['id'], data['secret'])
       if not SP:
         raise Exception('could not connect to spotify')
-    except Exception as e:
+    except Exception:
       return jsonify(success=False, message="Couldn't connect to Spotify API check your id and secret and try again")
   return jsonify(success=True, message='Successfully connected to the Spotify API')
+
+
+@app.route("/download", methods=['GET'])
+def download():
+  data = request.get_json()
+  print(data)
+
+  return jsonify(success=True, message="data received")
 
 
 if __name__ == '__main__':

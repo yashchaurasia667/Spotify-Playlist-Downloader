@@ -8,6 +8,9 @@ import aiohttp
 import os
 import re
 
+serverDownload = False
+serverPath = ""
+
 
 def progressBar(stream, chunk, bytes_remaning):
   total_size = stream.filesize
@@ -73,6 +76,10 @@ async def process_singles():
   search = pd.read_csv(SpotifyToTxt.path, sep='\t')
 
   path = os.path.join("Downloads", "Singles")
+  if serverDownload:
+    path = os.makedirs(os.path.join(serverPath, "SpotifyDownloader", "Singles"))
+
+  print(path)
   os.makedirs(path, exist_ok=True)
 
   tasks = []
@@ -94,7 +101,6 @@ if __name__ == "__main__":
 
   if args.reset:
     SpotifyToTxt.set_credentials()
-    exit()
 
   if not args.spotify and not args.name:
     print("Usage: python TxtToMp3.py -s [Link to spotify playlist]")
