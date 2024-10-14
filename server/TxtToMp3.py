@@ -72,12 +72,14 @@ async def process_playlist():
 
 async def process_singles(name='', artist='', serverPath=''):
 
-  print('in')
   if serverDownload:
-    print('server download')
-    path = os.makedirs(os.path.join(serverPath, "SpotifyDownloader", "Singles"))
-    await asyncio.gather(download_audio(name, artist, path))
-    return
+    path = os.path.join(serverPath, "SpotifyDownloader", "Singles")
+    os.makedirs(path, exist_ok=True)
+    try:
+      await asyncio.gather(download_audio(name, artist, path))
+      return True
+    except Exception as e:
+      return e
 
   SpotifyToTxt.search_spotify(name)
   search = pd.read_csv(SpotifyToTxt.path, sep='\t')

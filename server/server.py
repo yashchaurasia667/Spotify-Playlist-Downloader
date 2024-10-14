@@ -82,8 +82,7 @@ def download():
     if qtype == 'name':
       artists = ', '.join(data['song']['artists'])
       print(artists)
-      asyncio.run(TxtToMp3.process_singles(name=data['song']['name']))
-      print('downloading')
+      asyncio.run(TxtToMp3.process_singles(name=data['song']['name'], artist=artists, serverPath=data['path']))
     return jsonify(success=True, message="Song downloaded")
   return jsonify(success=False, message="check your request params")
 
