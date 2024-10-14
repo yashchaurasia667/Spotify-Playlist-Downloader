@@ -47,7 +47,7 @@ const SearchBar = () => {
         //   }));
         // }
         setSongs(data.songs);
-      } else throw new Error("Check the playlist link");
+      } else if (!data.success) throw new Error("Check the playlist link");
     } catch (error) {
       console.error(`Error fetching songs: ${error}`);
     } finally {
@@ -92,7 +92,6 @@ const SearchBar = () => {
           Search
         </button>
       </form>
-      
     </div>
   );
 };

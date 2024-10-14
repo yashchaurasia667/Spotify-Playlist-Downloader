@@ -9,8 +9,28 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
 
   const handleDownload = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    if (localStorage.getItem("downloadPath")) {
-      console.log(`Download Path: ${localStorage.getItem("downloadPath")}`);
+    const path = localStorage.getItem("downloadPath");
+    if (path) {
+      console.log(`Download Path: ${path}`);
+      try {
+        const res = await fetch("api/download", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            song: { name, artists },
+            path,
+          }),
+        });
+        const data = await res.json();
+        console.log(data);
+      } catch (error) {
+        console.error(
+          `Something went wrong while downloading the song ${error}`
+        );
+      }
+
       return;
     }
     try {

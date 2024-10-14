@@ -67,9 +67,7 @@ def connect_spotify(id='', secret=''):
     return False
 
 
-def getSongs(playlist_link: str, sp=''):
-  if not sp:
-    sp = connect_spotify()
+def getSongs(playlist_link: str, sp=connect_spotify()):
   # playlist_link = "https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX"
   playlist_dict = sp.playlist(playlist_link)
 
@@ -135,21 +133,16 @@ def getSongs(playlist_link: str, sp=''):
   return total
 
 
-def search_gui(name: str, qtype='name') -> pd.DataFrame:
+def search_gui(name: str, qtype='name', sp=connect_spotify()) -> pd.DataFrame:
   try:
     if (qtype == 'name'):
-      sp = connect_spotify()
       results = sp.search(q=name, type='track', limit=10)
       return results
     elif (qtype == 'playlist'):
-      return getSongs(name)
+      return getSongs(name, sp)
   except Exception as e:
     print(e)
     return False
-    # return json.dump({
-    #     'message': 'Something went wrong while searching...',
-    #     'success': False,
-    # })
 
 
 def search_spotify(names: list) -> list:

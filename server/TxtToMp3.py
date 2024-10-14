@@ -9,7 +9,6 @@ import os
 import re
 
 serverDownload = False
-serverPath = ""
 
 
 def progressBar(stream, chunk, bytes_remaning):
@@ -71,15 +70,19 @@ async def process_playlist():
   os.remove(SpotifyToTxt.path)
 
 
-async def process_singles():
-  SpotifyToTxt.search_spotify(args.name)
+async def process_singles(name='', artist='', serverPath=''):
+
+  print('in')
+  if serverDownload:
+    print('server download')
+    path = os.makedirs(os.path.join(serverPath, "SpotifyDownloader", "Singles"))
+    await asyncio.gather(download_audio(name, artist, path))
+    return
+
+  SpotifyToTxt.search_spotify(name)
   search = pd.read_csv(SpotifyToTxt.path, sep='\t')
 
   path = os.path.join("Downloads", "Singles")
-  if serverDownload:
-    path = os.makedirs(os.path.join(serverPath, "SpotifyDownloader", "Singles"))
-
-  print(path)
   os.makedirs(path, exist_ok=True)
 
   tasks = []
@@ -111,4 +114,4 @@ if __name__ == "__main__":
     asyncio.run(process_playlist())
 
   elif args.name:
-    asyncio.run(process_singles())
+    asyncio.run(process_singles(name=args.name))
