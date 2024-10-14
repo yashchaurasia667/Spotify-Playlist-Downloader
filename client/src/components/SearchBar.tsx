@@ -38,6 +38,7 @@ const SearchBar = () => {
           setPlaylist({
             cover: data.cover,
             name: data.name,
+            link: query,
           });
         }
         // else {

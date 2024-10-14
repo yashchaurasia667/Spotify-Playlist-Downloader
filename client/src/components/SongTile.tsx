@@ -1,3 +1,5 @@
+import { toast } from "react-toastify";
+
 import { Song } from "../types";
 
 const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
@@ -21,10 +23,16 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
           body: JSON.stringify({
             song: { name, artists },
             path,
+            qtype: "name",
           }),
         });
         const data = await res.json();
         console.log(data);
+        if (data.success) toast.success("Download complete");
+        else {
+          if (data?.status == 409) toast.error("Song already exists");
+          else toast.error("Something went wrong...");
+        }
       } catch (error) {
         console.error(
           `Something went wrong while downloading the song ${error}`

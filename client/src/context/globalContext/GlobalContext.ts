@@ -11,8 +11,12 @@ interface GlobalContextType {
   setLoading: (loading: boolean) => void;
   songs: Song[];
   setSongs: (songs: Song[]) => void;
-  playlist: { cover: string; name: string };
-  setPlaylist: (playlist: { cover: string; name: string }) => void;
+  playlist: { cover: string; name: string; link: string };
+  setPlaylist: (playlist: {
+    cover: string;
+    name: string;
+    link: string;
+  }) => void;
 }
 
 const GlobalContext = React.createContext(

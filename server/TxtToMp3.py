@@ -33,7 +33,6 @@ async def fetch_id(name, artist, session):
 
 
 async def download_audio(name, artist, path):
-
   async with aiohttp.ClientSession() as session:
     id = await fetch_id(name, artist, session)
     if (id):
@@ -42,50 +41,57 @@ async def download_audio(name, artist, path):
 
       try:
         # dName = await asyncio.to_thread(yt.streams.get_audio_only().download, path)
-        dName = yt.streams.get_audio_only().download(path)
         newName = os.path.join(path, f"{name}.mp3")
+        if os.path.exists(newName):
+          print('Already downloaded')
+          return 409
+        dName = yt.streams.get_audio_only().download(path)
         os.rename(dName, newName)
         cprint(f"{name} => {link}", color="green")
+        return 200
       except Exception as e:
         cprint(f"Exception: {e}\nCode execution with continue shortly...", color="red")
     else:
       cprint(f"Failed to find video for name {name} by {artist}.", color='red')
 
 
-async def process_playlist():
-  SpotifyToTxt.getSongs(args.spotify)
-  df = pd.read_csv(SpotifyToTxt.path, sep="\t")
+async def process_playlist(link='', serverPath=''):
 
   # Download path for the playlist
-  path = os.path.join("Downloads", "Playlists", SpotifyToTxt.playlist_name)
+  path = os.path.join(serverPath, "SpotifyDownloader", "Playlists", SpotifyToTxt.playlist_name)
   os.makedirs(path, exist_ok=True)
-  print()
+
+  if not serverDownload:
+    SpotifyToTxt.getSongs(link)
+  df = pd.read_csv(SpotifyToTxt.path, sep="\t")
 
   tasks = []
 
-  for song, artist in zip(df["songs"], df["artists"]):
-    tasks.append(download_audio(song, artist, path))
-  await asyncio.gather(*tasks)
+  try:
+    for song, artist in zip(df["songs"], df["artists"]):
+      tasks.append(download_audio(song, artist, path))
+    await asyncio.gather(*tasks)
 
-  os.remove(SpotifyToTxt.path)
+    os.remove(SpotifyToTxt.path)
+    return 200
+  except Exception:
+    return 500
 
 
 async def process_singles(name='', artist='', serverPath=''):
 
+  path = os.path.join(serverPath, "SpotifyDownloader", "Singles")
+  os.makedirs(path, exist_ok=True)
+
   if serverDownload:
-    path = os.path.join(serverPath, "SpotifyDownloader", "Singles")
-    os.makedirs(path, exist_ok=True)
     try:
-      await asyncio.gather(download_audio(name, artist, path))
-      return True
+      res = await asyncio.gather(download_audio(name, artist, path))
+      return res
     except Exception as e:
       return e
 
   SpotifyToTxt.search_spotify(name)
   search = pd.read_csv(SpotifyToTxt.path, sep='\t')
-
-  path = os.path.join("Downloads", "Singles")
-  os.makedirs(path, exist_ok=True)
 
   tasks = []
 
@@ -113,7 +119,7 @@ if __name__ == "__main__":
     print("Can only process one argument at a time..")
 
   if args.spotify:
-    asyncio.run(process_playlist())
+    asyncio.run(process_playlist(args.spotify))
 
   elif args.name:
     asyncio.run(process_singles(name=args.name))

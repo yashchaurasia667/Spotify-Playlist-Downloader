@@ -5,7 +5,6 @@ import asyncio
 
 app = Flask(__name__)
 
-qtype = ''
 SP = SpotifyToTxt.connect_spotify()
 
 
@@ -47,13 +46,10 @@ def searchPlaylists(query):
 def search():
   data = request.get_json()
   if data['query'] and SP:
-    global qtype
     print('searching')
     if (data['qtype'].lower() == 'name'):
-      qtype = 'name'
       return searchNames(data['query'])
     elif (data['qtype'].lower() == 'playlist'):
-      qtype = 'playlist'
       return searchPlaylists(data['query'])
     else:
       return jsonify(success=False, message="You can only search for a playlist or a name")
@@ -77,13 +73,25 @@ def connect():
 @app.route("/download", methods=['POST'])
 def download():
   data = request.get_json()
-  if data['song'] and data['path']:
+  if data['song'] and data['path'] and data['qtype']:
     TxtToMp3.serverDownload = True
-    if qtype == 'name':
+    print('Download started')
+    if data['qtype'] == 'name':
       artists = ', '.join(data['song']['artists'])
-      print(artists)
-      asyncio.run(TxtToMp3.process_singles(name=data['song']['name'], artist=artists, serverPath=data['path']))
-    return jsonify(success=True, message="Song downloaded")
+      res = asyncio.run(TxtToMp3.process_singles(name=data['song']['name'], artist=artists, serverPath=data['path']))
+      res = res[0]
+      if res == 200:
+        return jsonify(success=True, status=res, message="Song downloaded")
+      else:
+        return jsonify(success=False, status=res, message="Something went wrong while downloading the song")
+
+    elif data['qtype'] == 'playlist':
+      res = asyncio.run(TxtToMp3.process_playlist(link=data['song'], serverPath=data['path']))
+      if res == 200:
+        return jsonify(success=True, status=res, message="Playlist Downloaded")
+      else:
+        return jsonify(success=False, status=res, message="Something went wrong while downloading the playlist")
+
   return jsonify(success=False, message="check your request params")
 
 

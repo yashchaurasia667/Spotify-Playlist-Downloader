@@ -17,6 +17,7 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
   const [playlist, setPlaylist] = useState({
     cover: "",
     name: "",
+    link: "",
   });
   const value = {
     query,
