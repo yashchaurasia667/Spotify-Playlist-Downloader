@@ -8,6 +8,8 @@ import os
 import re
 
 path = ""
+CLIENT_ID = ''
+CLIENT_SECRET = ''
 
 
 # Loading the client id and client secret
@@ -52,6 +54,8 @@ def clean(name: str) -> str:
 def connect_spotify(id='', secret=''):
   try:
     # connecting with spotify API
+    if (not id and not secret):
+      initialize_credentials()
     auth_manager = SpotifyClientCredentials(client_id=id or CLIENT_ID, client_secret=secret or CLIENT_SECRET)
     sp = spotipy.Spotify(auth_manager=auth_manager)
     test_playlist = sp.playlist("37i9dQZF1DXcBWIGoYBM5M")
@@ -67,7 +71,9 @@ def connect_spotify(id='', secret=''):
     return False
 
 
-def getSongs(playlist_link: str, sp=connect_spotify()):
+def getSongs(playlist_link: str, sp=''):
+  if not sp:
+    sp = connect_spotify()
   # playlist_link = "https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX"
   playlist_dict = sp.playlist(playlist_link)
 
@@ -133,8 +139,10 @@ def getSongs(playlist_link: str, sp=connect_spotify()):
   return total
 
 
-def search_gui(name: str, qtype='name', sp=connect_spotify()) -> pd.DataFrame:
+def search_gui(name: str, qtype='name', sp='') -> pd.DataFrame:
   try:
+    if not sp:
+      connect_spotify()
     if (qtype == 'name'):
       results = sp.search(q=name, type='track', limit=10)
       return results
@@ -179,9 +187,7 @@ def search_spotify(names: list) -> list:
 
 
 try:
-  if os.path.exists(".env"):
-    initialize_credentials()
-  else:
+  if not os.path.exists(".env"):
     cprint(text=".env File does not exist\n", color="red")
     raise Exception(404)
 except Exception as e:

@@ -58,12 +58,13 @@ async def download_audio(name, artist, path):
 async def process_playlist(link='', serverPath=''):
 
   # Download path for the playlist
-  path = os.path.join(serverPath, "SpotifyDownloader", "Playlists", SpotifyToTxt.playlist_name)
-  os.makedirs(path, exist_ok=True)
 
   if not serverDownload:
     SpotifyToTxt.getSongs(link)
   df = pd.read_csv(SpotifyToTxt.path, sep="\t")
+
+  path = os.path.join(serverPath, "SpotifyDownloader", "Playlists", SpotifyToTxt.playlist_name)
+  os.makedirs(path, exist_ok=True)
 
   tasks = []
 

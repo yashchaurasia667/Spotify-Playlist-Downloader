@@ -5,7 +5,7 @@ import asyncio
 
 app = Flask(__name__)
 
-SP = SpotifyToTxt.connect_spotify()
+SP = ''
 
 
 def create_song_list(tracks):
