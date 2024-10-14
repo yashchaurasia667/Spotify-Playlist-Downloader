@@ -16,6 +16,7 @@ def progressBar(stream, chunk, bytes_remaning):
   bytes_downloaded = total_size - bytes_remaning
   completion = (bytes_downloaded / total_size) * 100
   print(completion)
+  return completion
 
 
 async def fetch_id(name, artist, session):

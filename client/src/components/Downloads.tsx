@@ -1,22 +1,43 @@
+import { useEffect, useState } from "react";
 import DownloadTile from "./DownloadTile.js";
 
+import io from "socket.io-client";
+
+const socket = io("api", {
+  transports: ["websocket", "polling"],
+});
+
 const Downloads = () => {
-  // const handleSubmit = async (e: SubmitEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     const res = await fetch("api", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ name }),
-  //     });
-  //     const data = await res.json();
-  //     console.log(data);
-  //   } catch (error) {
-  //     throw new Error(`Something went wrong... ${error}`);
-  //   }
-  // };
+  const [completion, setCompletion] = useState({
+    complete: 0,
+    incomplete: 10,
+  });
+
+  console.log(completion);
+
+  useEffect(() => {
+    socket.on("progress", (data) => {
+      setCompletion({
+        complete: data.completion,
+        incomplete: 10 - data.completion,
+      });
+      console.log(data);
+    });
+    return () => {
+      socket.off("progress");
+    };
+  }, [completion]);
+
+  const startDownload = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const res = await fetch("http://localhost:5000/sockets", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(res);
+  };
 
   const setDownloadPath = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -30,6 +51,7 @@ const Downloads = () => {
       console.error(`Something went wrong opening file dialog: ${error}`);
     }
   };
+
   return (
     <div className="px-4 py-10">
       <div className="flex justify-between items-center">
@@ -43,6 +65,15 @@ const Downloads = () => {
       </div>
       <div className="mt-20">
         <DownloadTile title="Test Tile" coverPath="/vite.svg" />
+        <div className="bg-[#232323] h-[100px] mt-8 px-[50px] py-[40px] rounded-[10px]">
+          <div
+            className={`grid grid-cols-[${completion.complete}px_${completion.incomplete}fr] items-center rounded-full overflow-hidden`}
+          >
+            <div className="complete h-[10px] bg-purple-500"></div>
+            <div className="remaining h-[10px] bg-[#acacac]"></div>
+          </div>
+          <button onClick={startDownload}>start</button>
+        </div>
       </div>
     </div>
   );
