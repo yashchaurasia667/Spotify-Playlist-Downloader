@@ -1,13 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import DownloadTile from "./DownloadTile.js";
-import { io } from "socket.io-client";
 
 const Downloads = () => {
-  const [progress, setProgress] = useState({
-    display: "grid",
-    gridTemplateColumns: `0fr 10fr`,
-  });
-
   const setDownloadPath = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
@@ -21,28 +15,6 @@ const Downloads = () => {
     }
   };
 
-  useEffect(() => {
-    const socket = io("http://localhost:5000", {
-      transports: ["websocket", "polling"],
-    });
-
-    socket.on("connect", () => {
-      socket.emit("data", { data: "connected" });
-    });
-
-    socket.on("data", (data) => {
-      console.log(data);
-      setProgress({
-        display: "grid",
-        gridTemplateColumns: `${data.progress}fr ${10 - data.progress}fr`,
-      });
-    });
-
-    return () => {
-      socket.off("data");
-    };
-  }, []);
-
   return (
     <div className="px-4 py-10">
       <div className="flex justify-between items-center">
@@ -55,13 +27,12 @@ const Downloads = () => {
         </button>
       </div>
       <div className="mt-20">
-        <DownloadTile title="Test Tile" coverPath="/vite.svg" />
-        <div className="bg-gray-800 h-[100px] mt-8 px-12 rounded-[5px] py-10">
-          <div style={progress} className="rounded-full overflow-hidden">
-            <div className="bg-purple-500 h-[5px]"></div>
-            <div className="bg-[#acacac] h-[5px]"></div>
-          </div>
-        </div>
+        <DownloadTile
+          key={0}
+          title="Test Tile"
+          coverPath="/vite.svg"
+          downloadPath="C:/Users/yashc/Downloads"
+        />
       </div>
     </div>
   );

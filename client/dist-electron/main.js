@@ -42,7 +42,7 @@ ipcMain.handle("openDownloadDialog", async () => {
 });
 ipcMain.handle("openPath", async (e, path2) => {
   e.preventDefault();
-  await shell.openPath(path2);
+  shell.openPath(path2);
 });
 app.whenReady().then(createWindow);
 export {

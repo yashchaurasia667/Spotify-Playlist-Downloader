@@ -1,11 +1,27 @@
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+
 import { FaFolder } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
 
-const DownloadTile = ({
-  title = "Enter title",
-  downloadPath = "path to download",
-  coverPath = "path to album cover",
-}) => {
+interface props {
+  title: string;
+  downloadPath: string;
+  coverPath: string;
+}
+
+interface style {
+  display: "grid";
+  gridTemplateColumns: string;
+}
+
+const DownloadTile = ({ title, downloadPath, coverPath }: props) => {
+  const [downloadComplete, setDownloadComplete] = useState<boolean>(false);
+  const [progress, setProgress] = useState<style>({
+    display: "grid",
+    gridTemplateColumns: `0fr 10fr`,
+  });
+
   const openPath = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -16,21 +32,59 @@ const DownloadTile = ({
     }
   };
 
+  useEffect(() => {
+    const socket = io("http://localhost:5000", {
+      transports: ["websocket", "polling"],
+    });
+
+    socket.on("connect", () => {
+      socket.emit("data", { data: "connected" });
+    });
+
+    socket.on("data", (data) => {
+      console.log(data);
+      setProgress({
+        display: "grid",
+        gridTemplateColumns: `${data.progress}fr ${10 - data.progress}fr`,
+      });
+      if (data.progress == 10) setDownloadComplete(true);
+    });
+
+    return () => {
+      socket.off("data");
+    };
+  }, []);
+
   return (
-    <div>
-      <div className="h-[100px] rounded-lg bg-[#242424] px-6 py-4 flex justify-between items-center">
-        <div className="flex gap-x-8">
-          <img src={coverPath} alt="cover" className="rounded-lg" />
+    <div className="h-[100px] rounded-lg bg-[#242424] px-6 py-4 grid grid-cols-[9fr_1fr] items-center">
+      <div className="flex gap-x-8">
+        <img src={coverPath} alt="cover" className="rounded-lg" />
+        <div className="flex-grow">
           <p className="text-lg font-semibold">{title}</p>
+          {downloadComplete ? (
+            ""
+          ) : (
+            <div
+              style={progress}
+              className="w-[90%] rounded-full overflow-hidden mt-2"
+            >
+              <div className="bg-purple-500 h-[5px]"></div>
+              <div className="bg-[#acacac] h-[5px]"></div>
+            </div>
+          )}
         </div>
-        <div className="flex gap-x-6">
-          <button onClick={(e) => openPath(e)}>
-            <FaFolder size={25} className="text-purple-200" />
-          </button>
-          <button>
-            <RxCross2 size={25} className="text-red-400" />
-          </button>
-        </div>
+      </div>
+      <div className="flex gap-x-6">
+        <button
+          disabled={!downloadComplete}
+          className={downloadComplete ? "" : "cursor-not-allowed opacity-50"}
+          onClick={(e) => openPath(e)}
+        >
+          <FaFolder size={25} className="text-purple-300" />
+        </button>
+        <button>
+          <RxCross2 size={25} className="text-red-400" />
+        </button>
       </div>
     </div>
   );
