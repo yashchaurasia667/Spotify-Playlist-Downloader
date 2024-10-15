@@ -6,6 +6,16 @@ const DownloadTile = ({
   downloadPath = "path to download",
   coverPath = "path to album cover",
 }) => {
+  const openPath = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = window.api.openPath(downloadPath);
+      console.log(res);
+    } catch (error) {
+      console.error(`Something went wrong: ${error}`);
+    }
+  };
+
   return (
     <div>
       <div className="h-[100px] rounded-lg bg-[#242424] px-6 py-4 flex justify-between items-center">
@@ -14,7 +24,7 @@ const DownloadTile = ({
           <p className="text-lg font-semibold">{title}</p>
         </div>
         <div className="flex gap-x-6">
-          <button>
+          <button onClick={(e) => openPath(e)}>
             <FaFolder size={25} className="text-purple-200" />
           </button>
           <button>

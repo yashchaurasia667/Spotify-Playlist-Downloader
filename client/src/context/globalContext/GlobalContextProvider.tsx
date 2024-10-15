@@ -2,6 +2,7 @@ import React, { useState, ReactNode } from "react";
 import GlobalContext from "./GlobalContext";
 
 import { Song } from "../../types";
+// import DownloadTile from "../../components/DownloadTile";
 
 interface GlobalContextProviderProps {
   children: ReactNode;
@@ -19,6 +20,11 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
     name: "",
     link: "",
   });
+
+  // const createDownload = (cover, name, path, progress, complete) => {
+  //   <DownloadTile  />;
+  // };
+
   const value = {
     query,
     setQuery,

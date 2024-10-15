@@ -3,11 +3,9 @@ import DownloadTile from "./DownloadTile.js";
 import { io } from "socket.io-client";
 
 const Downloads = () => {
-  const [completion, setCompletion] = useState(0);
-
   const [progress, setProgress] = useState({
     display: "grid",
-    gridTemplateColumns: `${completion}fr ${10 - completion}fr`,
+    gridTemplateColumns: `0fr 10fr`,
   });
 
   const setDownloadPath = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -34,9 +32,8 @@ const Downloads = () => {
 
     socket.on("data", (data) => {
       console.log(data);
-      setCompletion(data.progress);
       setProgress({
-        ...progress,
+        display: "grid",
         gridTemplateColumns: `${data.progress}fr ${10 - data.progress}fr`,
       });
     });
@@ -61,8 +58,8 @@ const Downloads = () => {
         <DownloadTile title="Test Tile" coverPath="/vite.svg" />
         <div className="bg-gray-800 h-[100px] mt-8 px-12 rounded-[5px] py-10">
           <div style={progress} className="rounded-full overflow-hidden">
-            <div className="bg-purple-500 h-[10px]"></div>
-            <div className="bg-[#acacac] h-[10px]"></div>
+            <div className="bg-purple-500 h-[5px]"></div>
+            <div className="bg-[#acacac] h-[5px]"></div>
           </div>
         </div>
       </div>

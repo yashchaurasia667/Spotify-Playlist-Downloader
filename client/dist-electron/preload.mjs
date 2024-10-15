@@ -24,5 +24,10 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
   // ...
 });
 electron.contextBridge.exposeInMainWorld("api", {
-  openDownloadDialog: () => electron.ipcRenderer.invoke("openDownloadDialog", "opening folder dialog")
+  openDownloadDialog: () => {
+    electron.ipcRenderer.invoke("openDownloadDialog");
+  },
+  openPath: (path) => {
+    electron.ipcRenderer.invoke("openPath", path);
+  }
 });

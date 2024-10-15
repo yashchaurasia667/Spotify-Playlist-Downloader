@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, BrowserWindow, ipcMain, dialog, shell } from "electron";
 // import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -71,6 +71,11 @@ app.on("activate", () => {
 ipcMain.handle("openDownloadDialog", async () => {
   const res = await dialog.showOpenDialog({ properties: ["openDirectory"] });
   return res;
+});
+
+ipcMain.handle("openPath", async (e, path: string) => {
+  e.preventDefault();
+  shell.openPath(path);
 });
 
 app.whenReady().then(createWindow);

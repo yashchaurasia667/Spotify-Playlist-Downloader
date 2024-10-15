@@ -118,7 +118,6 @@ def progress():
 def data(data):
   print(f"received data: {data}")
   progress()
-  # emit('data', {"data": 'hello from socket'})
 
 
 if __name__ == '__main__':
