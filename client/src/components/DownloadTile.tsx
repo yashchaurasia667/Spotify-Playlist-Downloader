@@ -8,6 +8,7 @@ interface props {
   title: string;
   downloadPath: string;
   coverPath: string;
+  complete: boolean;
 }
 
 interface style {
@@ -15,8 +16,8 @@ interface style {
   gridTemplateColumns: string;
 }
 
-const DownloadTile = ({ title, downloadPath, coverPath }: props) => {
-  const [downloadComplete, setDownloadComplete] = useState<boolean>(false);
+const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
+  const [downloadComplete, setDownloadComplete] = useState<boolean>(complete);
   const [progress, setProgress] = useState<style>({
     display: "grid",
     gridTemplateColumns: `0fr 10fr`,

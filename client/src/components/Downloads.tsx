@@ -1,7 +1,14 @@
-import React from "react";
-import DownloadTile from "./DownloadTile.js";
+import React, { useContext } from "react";
+
+import GlobalContext from "../context/globalContext/GlobalContext";
 
 const Downloads = () => {
+  const context = useContext(GlobalContext);
+
+  if (!context) return;
+
+  const { downloads } = context;
+
   const setDownloadPath = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
@@ -27,12 +34,15 @@ const Downloads = () => {
         </button>
       </div>
       <div className="mt-20">
-        <DownloadTile
-          key={0}
+        {/* <DownloadTile
           title="Test Tile"
           coverPath="/vite.svg"
           downloadPath="C:/Users/yashc/Downloads"
-        />
+          complete={true}
+        /> */}
+        {
+          downloads.map((tile, index)=>  )
+        }
       </div>
     </div>
   );

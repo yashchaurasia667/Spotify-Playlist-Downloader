@@ -2,7 +2,6 @@ import React, { useState, ReactNode } from "react";
 import GlobalContext from "./GlobalContext";
 
 import { Song } from "../../types";
-import DownloadTile from "../../components/DownloadTile";
 
 interface GlobalContextProviderProps {
   children: ReactNode;
@@ -27,8 +26,28 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
     link: "",
   });
 
-  const createDownload = (cover: string, name: string, path: string) => {
-    <DownloadTile title={name} downloadPath={path} coverPath={cover} />;
+  const [downloads, setDownloads] = useState<
+    {
+      title: string;
+      downloadPath: string;
+      coverPath: string;
+      complete: boolean;
+    }[]
+  >([]);
+
+  const createDownload = (
+    cover: string,
+    name: string,
+    path: string,
+    complete: boolean
+  ) => {
+    const newDownload = {
+      title: name,
+      downloadPath: path,
+      coverPath: cover,
+      complete: complete,
+    };
+    setDownloads((prevDownloads) => [...prevDownloads, newDownload]);
   };
 
   const value = {
@@ -42,6 +61,8 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
     setSongs,
     playlist,
     setPlaylist,
+    downloads,
+    createDownload,
   };
   return (
     <GlobalContext.Provider value={value}>{children}</GlobalContext.Provider>

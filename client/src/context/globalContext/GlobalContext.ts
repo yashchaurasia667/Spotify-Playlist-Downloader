@@ -17,6 +17,18 @@ interface GlobalContextType {
     name: string;
     link: string;
   }) => void;
+  downloads: {
+    title: string;
+    downloadPath: string;
+    coverPath: string;
+    complete: boolean;
+  }[];
+  createDownload: (
+    cover: string,
+    name: string,
+    path: string,
+    complete: boolean
+  ) => void;
 }
 
 const GlobalContext = React.createContext(
