@@ -1,13 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
+
+import DownloadTile from "./DownloadTile";
 
 import GlobalContext from "../context/globalContext/GlobalContext";
 
 const Downloads = () => {
   const context = useContext(GlobalContext);
 
-  if (!context) return;
+  if (!context) throw new Error("No Global context");
 
-  const { downloads } = context;
+  const { downloads, createDownload } = context;
 
   const setDownloadPath = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -22,6 +24,11 @@ const Downloads = () => {
     }
   };
 
+  useEffect(() => {
+    createDownload("/vite.svg", "Test tile", "c:/Users/yashc/Downloads/", true);
+    console.log("Download tile created");
+  }, []);
+
   return (
     <div className="px-4 py-10">
       <div className="flex justify-between items-center">
@@ -33,16 +40,16 @@ const Downloads = () => {
           Set Download Path
         </button>
       </div>
-      <div className="mt-20">
+      <div className="mt-20 flex flex-col gap-y-4">
         {/* <DownloadTile
           title="Test Tile"
           coverPath="/vite.svg"
           downloadPath="C:/Users/yashc/Downloads"
           complete={true}
         /> */}
-        {
-          downloads.map((tile, index)=>  )
-        }
+        {downloads.map((tile, index) => (
+          <DownloadTile key={index} {...tile} />
+        ))}
       </div>
     </div>
   );
