@@ -1,13 +1,16 @@
-from flask import Flask, request, jsonify
-from flask_socketio import SocketIO, emit
-from flask_cors import CORS
+# from flask import Flask, request, jsonify
+# from flask_socketio import SocketIO, emit
+# from flask_cors import CORS
+from flask import request, jsonify
+from flask_socketio import emit
+from setup import socketio, app
 import SpotifyToTxt
 import TxtToMp3
 import asyncio
 
-app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173"])
-socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")
+# app = Flask(__name__)
+# CORS(app, origins=["http://localhost:5173"])
+# socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")
 
 SP = ''
 
@@ -102,21 +105,9 @@ def download():
   return jsonify(success=False, message="check your request params")
 
 
-@socketio.on('connect', namespace='/socket')
-def connect():
-  print("client connected")
-
-
-def progress(progress):
-  print(progress)
-  emit('downloadProgress', {'progress': progress})
-
-
-@socketio.on('data')
-def data(data):
-  print(f"received data: {data}")
-  progress()
-
+# @socketio.on('connect')
+# def connect():
+#   print("client connected")
 
 if __name__ == '__main__':
   socketio.run(app, debug=True)

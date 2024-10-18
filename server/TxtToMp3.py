@@ -1,6 +1,7 @@
+from setup import socketio
+from flask_socketio import emit
 from termcolor import cprint
 from pytube import YouTube
-from flask_socketio import emit
 import pandas as pd
 import SpotifyToTxt
 import argparse
@@ -12,11 +13,29 @@ import re
 serverDownload = False
 
 
+@socketio.on('start')
+def start(name):
+  print(name)
+  emit('start', {name})
+
+
+@socketio.on('progress')
+def progress(progress):
+  print(progress)
+  emit("progress", {progress})
+
+
+@socketio.on('complete')
+def complete(complete):
+  emit('complete', {complete})
+
+
 def progressBar(stream, chunk, bytes_remaning, emit_progress=None):
   total_size = stream.filesize
   bytes_downloaded = total_size - bytes_remaning
   completion = (bytes_downloaded / total_size) * 100
-  return completion
+  socketio.emit("progress", {"completion": completion}, namespace='/')
+  # return completion
 
 
 async def fetch_id(name, artist, session):
@@ -47,9 +66,12 @@ async def download_audio(name, artist, path):
           print('Already downloaded')
           return 409
 
+        socketio.emit('start', {'name': name}, namespace='/')
+
         dName = yt.streams.get_audio_only().download(path)
         os.rename(dName, newName)
         cprint(f"{name} => {link}", color="green")
+        socketio.emit('complete', {'complete': True}, namespace='/')
         return 200
 
       except Exception as e:

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { io } from "socket.io-client";
 
 import { FaFolder } from "react-icons/fa";
@@ -17,6 +17,10 @@ interface style {
 }
 
 const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
+  const socket = io("http://localhost:5000", {
+    transports: ["websocket", "polling"],
+  });
+
   const [downloadComplete, setDownloadComplete] = useState<boolean>(complete);
   const [progress, setProgress] = useState<style>({
     display: "grid",
@@ -33,28 +37,25 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
     }
   };
 
-  useEffect(() => {
-    const socket = io("http://localhost:5000", {
-      transports: ["websocket", "polling"],
-    });
+  // useEffect(() => {
+  //   return () => {
+  //     socket.off("progress");
+  //   };
+  // }, []);
 
-    socket.on("connect", () => {
-      socket.emit("data", { data: "connected" });
+  socket.on("progress", (data) => {
+    console.log(data);
+    setProgress({
+      display: "grid",
+      gridTemplateColumns: `${data.progress}fr ${10 - data.progress}fr`,
     });
+    if (data.progress == 10) setDownloadComplete(true);
+  });
 
-    socket.on("downloadProgress", (data) => {
-      console.log(data);
-      setProgress({
-        display: "grid",
-        gridTemplateColumns: `${data.progress}fr ${10 - data.progress}fr`,
-      });
-      if (data.progress == 10) setDownloadComplete(true);
-    });
-
-    return () => {
-      socket.off("data");
-    };
-  }, []);
+  socket.on("complete", () => {
+    console.log("Download complete");
+    setDownloadComplete(true);
+  });
 
   return (
     <div className="h-[100px] rounded-lg bg-[#242424] px-6 py-4 grid grid-cols-[9fr_1fr] items-center">
