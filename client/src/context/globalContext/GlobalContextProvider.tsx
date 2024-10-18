@@ -20,7 +20,7 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
   const [qtype, setQtype] = useState<"Playlist" | "Name">("Name");
   const [loading, setLoading] = useState<boolean>(false);
   const [songs, setSongs] = useState<Song[]>([]);
-  const [playlist, setPlaylist] = useState<playlist>({
+  const [playlist, setPlaylist] = useState<playlist | undefined>({
     cover: "",
     name: "",
     link: "",
@@ -35,15 +35,29 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
     }[]
   >([]);
 
-  const createDownload = (
-    cover: string,
-    name: string,
-    path: string,
-    complete: boolean
-  ) => {
+  const setDownloadPath = async (e: React.FormEvent | undefined) => {
+    if (e) e.preventDefault();
+    try {
+      const res = await window.api.openDownloadDialog();
+      if (res && !res?.canceled) {
+        const path = res.filePaths[0];
+        localStorage.setItem("downloadPath", path);
+        console.log(`Download path set to: ${path}`);
+        return path;
+      } else console.log("Operation canceled");
+    } catch (error) {
+      console.error(`Something went wrong opening file dialog: ${error}`);
+    }
+    return "";
+  };
+
+  const createDownload = (cover: string, name: string, complete: boolean) => {
+    let path = localStorage.getItem("downloadPath");
+    if (!path) setDownloadPath(undefined);
+    path = localStorage.getItem("downloadPath");
     const newDownload = {
       title: name,
-      downloadPath: path,
+      downloadPath: path || "c:/",
       coverPath: cover,
       complete: complete,
     };
@@ -62,6 +76,7 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
     playlist,
     setPlaylist,
     downloads,
+    setDownloadPath,
     createDownload,
   };
   return (

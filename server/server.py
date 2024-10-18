@@ -5,8 +5,6 @@ import SpotifyToTxt
 import TxtToMp3
 import asyncio
 
-import time
-
 app = Flask(__name__)
 CORS(app, origins=["http://localhost:5173"])
 socketio = SocketIO(app, cors_allowed_origins="http://localhost:5173")
@@ -34,7 +32,7 @@ def searchNames(query):
     tracks = SpotifyToTxt.search_gui(query, sp=SP)
     create_song_list(tracks)
     return jsonify(success=True, songs=songs)
-  except Exception as e:
+  except Exception:
     return jsonify(message='Could not find a song with that name...', success=False)
 
 
@@ -79,9 +77,12 @@ def connect():
 @app.route("/download", methods=['POST'])
 def download():
   data = request.get_json()
+
   if data['song'] and data['path'] and data['qtype']:
     TxtToMp3.serverDownload = True
     print('Download started')
+    # socketio.emit('start', {'start': True}, namespace='/')
+
     if data['qtype'] == 'name':
       artists = ', '.join(data['song']['artists'])
       res = asyncio.run(TxtToMp3.process_singles(name=data['song']['name'], artist=artists, serverPath=data['path']))
@@ -106,12 +107,9 @@ def connect():
   print("client connected")
 
 
-def progress():
-  progress = 0
-  for i in range(10):
-    progress += 1
-    emit('data', {'progress': progress})
-    time.sleep(1)
+def progress(progress):
+  print(progress)
+  emit('downloadProgress', {'progress': progress})
 
 
 @socketio.on('data')

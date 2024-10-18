@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import { useContext } from "react";
 
 import DownloadTile from "./DownloadTile";
 
@@ -9,25 +9,7 @@ const Downloads = () => {
 
   if (!context) throw new Error("No Global context");
 
-  const { downloads, createDownload } = context;
-
-  const setDownloadPath = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      const res = await window.api.openDownloadDialog();
-      if (res && !res?.canceled) {
-        localStorage.setItem("downloadPath", res.filePaths[0]);
-        console.log(`Download path set to: ${res.filePaths[0]}`);
-      } else console.log("Operation canceled");
-    } catch (error) {
-      console.error(`Something went wrong opening file dialog: ${error}`);
-    }
-  };
-
-  useEffect(() => {
-    createDownload("/vite.svg", "Test tile", "c:/Users/yashc/Downloads/", true);
-    console.log("Download tile created");
-  }, []);
+  const { downloads, setDownloadPath } = context;
 
   return (
     <div className="px-4 py-10">

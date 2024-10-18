@@ -28,15 +28,15 @@ const SongBlock = () => {
       ) : (
         <div
           className={`${
-            playlist.name == "" ? "" : "bg-[#282828]"
+            playlist?.name == "" ? "" : "bg-[#282828]"
           } rounded-xl w-[90%] px-3 mx-auto mt-8 overflow-auto`}
         >
-          <div className={playlist.name == "" ? "hidden" : ""}>
-            <PlaylistTile {...playlist} />
+          <div className={playlist?.name == "" ? "hidden" : ""}>
+            {playlist ? <PlaylistTile {...playlist} /> : ""}
           </div>
           <div
             className={`${
-              playlist.name == "" ? "mx-auto w-[75%]" : ""
+              playlist?.name == "" ? "mx-auto w-[75%]" : ""
             } mt-5 overflow-auto`}
           >
             {renderResult}

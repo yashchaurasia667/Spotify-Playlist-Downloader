@@ -23,6 +23,7 @@ const SearchBar = () => {
 
     setLoading(true);
     setSongs([]);
+    setPlaylist(undefined);
     try {
       const res = await fetch("/api", {
         method: "POST",

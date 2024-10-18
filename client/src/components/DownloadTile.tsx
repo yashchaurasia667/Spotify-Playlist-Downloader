@@ -42,7 +42,7 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
       socket.emit("data", { data: "connected" });
     });
 
-    socket.on("data", (data) => {
+    socket.on("downloadProgress", (data) => {
       console.log(data);
       setProgress({
         display: "grid",
@@ -59,7 +59,7 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
   return (
     <div className="h-[100px] rounded-lg bg-[#242424] px-6 py-4 grid grid-cols-[9fr_1fr] items-center">
       <div className="flex gap-x-8">
-        <img src={coverPath} alt="cover" className="rounded-lg" />
+        <img src={coverPath} width={60} alt="cover" className="rounded-lg" />
         <div className="flex-grow">
           <p className="text-lg font-semibold">{title}</p>
           {downloadComplete ? (

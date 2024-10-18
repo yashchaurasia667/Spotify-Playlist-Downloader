@@ -1,8 +1,22 @@
+import { useContext, useEffect } from "react";
+
 import { toast } from "react-toastify";
+import { io } from "socket.io-client";
 
 import { Song } from "../types";
 
+import GlobalContext from "../context/globalContext/GlobalContext";
+
 const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
+  const socket = io("http://localhost:5000", {
+    transports: ["websocket", "polling"],
+  });
+
+  const context = useContext(GlobalContext);
+  if (!context) throw new Error("No Global context");
+
+  const { createDownload } = context;
+
   const fromMilliseconds = (ms: number) => {
     const min = Math.floor(ms / 60000);
     const sec = ((ms % 60000) / 1000).toFixed(0);
@@ -15,7 +29,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
     if (path) {
       console.log(`Download Path: ${path}`);
       try {
-        const res = await fetch("api/download", {
+        const res = await fetch("/api/download", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -27,7 +41,6 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
           }),
         });
         const data = await res.json();
-        console.log(data);
         if (data.success) toast.success("Download complete");
         else {
           if (data?.status == 409) toast.error("Song already exists");
@@ -49,6 +62,17 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
       console.error(`Something went wrong opening file dialog: ${error}`);
     }
   };
+
+  useEffect(() => {
+    socket.on("start", (data) => {
+      console.log("download started ", data);
+      createDownload(images, name, false);
+    });
+
+    return () => {
+      socket.off("start");
+    };
+  }, []);
 
   return (
     <div className="overflow-hidden font-semibold w-[100%] h-[80px] grid grid-cols-[3fr_2fr_1fr_1fr] gap-x-8 items-center rounded-lg bg-[#242424] mt-3 px-6 py-4">

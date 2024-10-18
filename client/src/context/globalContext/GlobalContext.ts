@@ -11,24 +11,24 @@ interface GlobalContextType {
   setLoading: (loading: boolean) => void;
   songs: Song[];
   setSongs: (songs: Song[]) => void;
-  playlist: { cover: string; name: string; link: string };
-  setPlaylist: (playlist: {
-    cover: string;
-    name: string;
-    link: string;
-  }) => void;
+  playlist: { cover: string; name: string; link: string } | undefined;
+  setPlaylist: (
+    playlist:
+      | {
+          cover: string;
+          name: string;
+          link: string;
+        }
+      | undefined
+  ) => void;
   downloads: {
     title: string;
     downloadPath: string;
     coverPath: string;
     complete: boolean;
   }[];
-  createDownload: (
-    cover: string,
-    name: string,
-    path: string,
-    complete: boolean
-  ) => void;
+  setDownloadPath: (e: React.FormEvent | undefined) => Promise<string>;
+  createDownload: (cover: string, name: string, complete: boolean) => void;
 }
 
 const GlobalContext = React.createContext(

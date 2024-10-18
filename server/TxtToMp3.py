@@ -1,5 +1,6 @@
 from termcolor import cprint
 from pytube import YouTube
+from flask_socketio import emit
 import pandas as pd
 import SpotifyToTxt
 import argparse
@@ -11,11 +12,10 @@ import re
 serverDownload = False
 
 
-def progressBar(stream, chunk, bytes_remaning):
+def progressBar(stream, chunk, bytes_remaning, emit_progress=None):
   total_size = stream.filesize
   bytes_downloaded = total_size - bytes_remaning
   completion = (bytes_downloaded / total_size) * 100
-  print(completion)
   return completion
 
 
@@ -46,10 +46,12 @@ async def download_audio(name, artist, path):
         if os.path.exists(newName):
           print('Already downloaded')
           return 409
+
         dName = yt.streams.get_audio_only().download(path)
         os.rename(dName, newName)
         cprint(f"{name} => {link}", color="green")
         return 200
+
       except Exception as e:
         cprint(f"Exception: {e}\nCode execution with continue shortly...", color="red")
     else:
