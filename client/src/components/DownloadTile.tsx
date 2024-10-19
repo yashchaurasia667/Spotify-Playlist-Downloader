@@ -37,12 +37,6 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
     }
   };
 
-  // useEffect(() => {
-  //   return () => {
-  //     socket.off("progress");
-  //   };
-  // }, []);
-
   useEffect(() => {
     socket.on("progress", (data) => {
       console.log(data);
@@ -53,16 +47,10 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
       if (data.progress == 10) setDownloadComplete(true);
     });
 
-    socket.on("complete", () => {
-      console.log("Download complete");
-      setDownloadComplete(true);
-    });
-
     return () => {
       socket.off("progress");
-      socket.off("complete");
     };
-  }, []);
+  }, [socket]);
 
   return (
     <div className="h-[100px] rounded-lg bg-[#242424] px-6 py-4 grid grid-cols-[9fr_1fr] items-center">

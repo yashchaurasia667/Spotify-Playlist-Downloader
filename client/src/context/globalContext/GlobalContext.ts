@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Song } from "../../types";
+import { Song, playlist, downloads } from "../../types";
 
 interface GlobalContextType {
   query: string;
@@ -11,23 +11,13 @@ interface GlobalContextType {
   setLoading: (loading: boolean) => void;
   songs: Song[];
   setSongs: (songs: Song[]) => void;
-  playlist: { cover: string; name: string; link: string } | undefined;
-  setPlaylist: (
-    playlist:
-      | {
-          cover: string;
-          name: string;
-          link: string;
-        }
-      | undefined
-  ) => void;
-  downloads: {
-    title: string;
-    downloadPath: string;
-    coverPath: string;
-    complete: boolean;
-  }[];
+  playlist: playlist | undefined;
+  setPlaylist: (playlist: playlist | undefined) => void;
+  // downloads: downloads[];
+  // setDownloads: (download: downloads[]) => void;
   setDownloadPath: (e: React.FormEvent | undefined) => Promise<string>;
+  downloading: downloads[];
+  setDownloading: (download: downloads[]) => void;
   createDownload: (cover: string, name: string, complete: boolean) => void;
 }
 

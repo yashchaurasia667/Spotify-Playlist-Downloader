@@ -83,6 +83,7 @@ def download():
 
   if data['song'] and data['path'] and data['qtype']:
     TxtToMp3.serverDownload = True
+    TxtToMp3.cover = data['song']['images']
     print('Download started')
     # socketio.emit('start', {'start': True}, namespace='/')
 

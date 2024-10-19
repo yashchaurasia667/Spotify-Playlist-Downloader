@@ -30,10 +30,10 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
 });
 
 contextBridge.exposeInMainWorld("api", {
-  openDownloadDialog: () => {
-    ipcRenderer.invoke("openDownloadDialog");
+  openDownloadDialog: async () => {
+    return await ipcRenderer.invoke("openDownloadDialog");
   },
-  openPath: (path: string) => {
-    ipcRenderer.invoke("openPath", path);
+  openPath: async (path: string) => {
+    return await ipcRenderer.invoke("openPath", path);
   },
 });

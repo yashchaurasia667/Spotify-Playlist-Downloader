@@ -15,7 +15,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
   const context = useContext(GlobalContext);
   if (!context) throw new Error("No Global context");
 
-  const { createDownload } = context;
+  const { setDownloadPath, createDownload } = context;
 
   const fromMilliseconds = (ms: number) => {
     const min = Math.floor(ms / 60000);
@@ -25,47 +25,41 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
 
   const handleDownload = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const path = localStorage.getItem("downloadPath");
-    if (path) {
-      console.log(`Download Path: ${path}`);
-      try {
-        const res = await fetch("/api/download", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            song: { name, artists },
-            path,
-            qtype: "name",
-          }),
-        });
-        const data = await res.json();
-        if (data.success) toast.success("Download complete");
-        else {
-          if (data?.status == 409) toast.error("Song already exists");
-          else toast.error("Something went wrong...");
-        }
-      } catch (error) {
-        console.error(
-          `Something went wrong while downloading the song ${error}`
-        );
-      }
 
-      return;
-    }
+    let path = localStorage.getItem("downloadPath");
+    if (!path) path = await setDownloadPath(undefined);
+    console.log(`Download Path: ${path}`);
+
     try {
-      const res = await window.api.openDownloadDialog();
-      if (res && !res?.canceled)
-        localStorage.setItem("downloadPath", res.filePaths[0]);
+      const res = await fetch("/api/download", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          song: { name, artists, images },
+          path,
+          qtype: "name",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) toast.success("Download complete");
+      else {
+        if (data?.status == 409) toast.error("Song already exists");
+        else toast.error("Something went wrong...");
+      }
     } catch (error) {
-      console.error(`Something went wrong opening file dialog: ${error}`);
+      console.error(`Something went wrong while downloading the song ${error}`);
     }
   };
 
   useEffect(() => {
     socket.on("start", (data) => {
-      if (data.name == name && data.artist == artists) {
+      console.log("data", data.artist);
+      console.log("images", images);
+      if (data.title == name && data.artist == artists) {
         console.log("download started ", data);
         createDownload(images, name, false);
       }
@@ -74,7 +68,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
     return () => {
       socket.off("start");
     };
-  }, []);
+  }, [artists, images, name, socket, createDownload]);
 
   return (
     <div className="overflow-hidden font-semibold w-[100%] h-[80px] grid grid-cols-[3fr_2fr_1fr_1fr] gap-x-8 items-center rounded-lg bg-[#242424] mt-3 px-6 py-4">

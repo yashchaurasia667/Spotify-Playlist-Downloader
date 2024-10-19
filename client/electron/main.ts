@@ -70,6 +70,7 @@ app.on("activate", () => {
 
 ipcMain.handle("openDownloadDialog", async () => {
   const res = await dialog.showOpenDialog({ properties: ["openDirectory"] });
+  console.log("something something");
   return res;
 });
 

@@ -1,15 +1,22 @@
-import { useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 
 import DownloadTile from "./DownloadTile";
 
 import GlobalContext from "../context/globalContext/GlobalContext";
 
+import { downloads } from "../types/index.ts";
+
 const Downloads = () => {
+  const [downloads, setDownloads] = useState<downloads[]>([]);
   const context = useContext(GlobalContext);
 
   if (!context) throw new Error("No Global context");
 
-  const { downloads, setDownloadPath } = context;
+  const { downloading, setDownloadPath } = context;
+  useEffect(() => {
+    const dwl = localStorage.getItem("downloads");
+    if (dwl) setDownloads(JSON.parse(dwl));
+  }, []);
 
   return (
     <div className="px-4 py-10">
@@ -23,12 +30,9 @@ const Downloads = () => {
         </button>
       </div>
       <div className="mt-20 flex flex-col gap-y-4">
-        {/* <DownloadTile
-          title="Test Tile"
-          coverPath="/vite.svg"
-          downloadPath="C:/Users/yashc/Downloads"
-          complete={true}
-        /> */}
+        {downloading.map((title, index) => (
+          <DownloadTile key={index} {...title} />
+        ))}
         {downloads.map((tile, index) => (
           <DownloadTile key={index} {...tile} />
         ))}

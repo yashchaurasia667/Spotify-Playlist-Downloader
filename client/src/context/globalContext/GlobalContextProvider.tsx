@@ -1,16 +1,10 @@
 import React, { useState, ReactNode } from "react";
 import GlobalContext from "./GlobalContext";
 
-import { Song } from "../../types";
+import { Song, playlist, downloads } from "../../types";
 
 interface GlobalContextProviderProps {
   children: ReactNode;
-}
-
-interface playlist {
-  cover: string;
-  name: string;
-  link: string;
 }
 
 const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
@@ -26,14 +20,7 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
     link: "",
   });
 
-  const [downloads, setDownloads] = useState<
-    {
-      title: string;
-      downloadPath: string;
-      coverPath: string;
-      complete: boolean;
-    }[]
-  >([]);
+  const [downloading, setDownloading] = useState<downloads[]>([]);
 
   const setDownloadPath = async (e: React.FormEvent | undefined) => {
     if (e) e.preventDefault();
@@ -52,16 +39,20 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
   };
 
   const createDownload = (cover: string, name: string, complete: boolean) => {
-    let path = localStorage.getItem("downloadPath");
-    if (!path) setDownloadPath(undefined);
-    path = localStorage.getItem("downloadPath");
+    const path = localStorage.getItem("downloadPath");
     const newDownload = {
       title: name,
       downloadPath: path || "c:/",
       coverPath: cover,
       complete: complete,
     };
-    setDownloads((prevDownloads) => [...prevDownloads, newDownload]);
+
+    setDownloading((prevDownloads) => {
+      return [...prevDownloads, newDownload];
+      // const updateDownloads = [...prevDownloads, newDownload];
+      // localStorage.setItem("downloads", JSON.stringify(updateDownloads));
+      // return updateDownloads;
+    });
   };
 
   const value = {
@@ -75,7 +66,10 @@ const GlobalContextProvider: React.FC<GlobalContextProviderProps> = ({
     setSongs,
     playlist,
     setPlaylist,
-    downloads,
+    // downloads,
+    // setDownloads,
+    downloading,
+    setDownloading,
     setDownloadPath,
     createDownload,
   };
