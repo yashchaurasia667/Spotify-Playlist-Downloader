@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 import { FaFolder } from "react-icons/fa";
@@ -43,19 +43,26 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
   //   };
   // }, []);
 
-  socket.on("progress", (data) => {
-    console.log(data);
-    setProgress({
-      display: "grid",
-      gridTemplateColumns: `${data.progress}fr ${10 - data.progress}fr`,
+  useEffect(() => {
+    socket.on("progress", (data) => {
+      console.log(data);
+      setProgress({
+        display: "grid",
+        gridTemplateColumns: `${data.progress}fr ${10 - data.progress}fr`,
+      });
+      if (data.progress == 10) setDownloadComplete(true);
     });
-    if (data.progress == 10) setDownloadComplete(true);
-  });
 
-  socket.on("complete", () => {
-    console.log("Download complete");
-    setDownloadComplete(true);
-  });
+    socket.on("complete", () => {
+      console.log("Download complete");
+      setDownloadComplete(true);
+    });
+
+    return () => {
+      socket.off("progress");
+      socket.off("complete");
+    };
+  }, []);
 
   return (
     <div className="h-[100px] rounded-lg bg-[#242424] px-6 py-4 grid grid-cols-[9fr_1fr] items-center">

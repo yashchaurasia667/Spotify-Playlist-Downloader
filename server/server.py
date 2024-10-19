@@ -105,9 +105,5 @@ def download():
   return jsonify(success=False, message="check your request params")
 
 
-# @socketio.on('connect')
-# def connect():
-#   print("client connected")
-
 if __name__ == '__main__':
   socketio.run(app, debug=True)

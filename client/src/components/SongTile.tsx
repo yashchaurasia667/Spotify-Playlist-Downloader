@@ -65,7 +65,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
 
   useEffect(() => {
     socket.on("start", (data) => {
-      if (data.name == name) {
+      if (data.name == name && data.artist == artists) {
         console.log("download started ", data);
         createDownload(images, name, false);
       }

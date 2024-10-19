@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import SearchBar from "../components/SearchBar";
 import SongBlock from "../components/SongBlock";
@@ -41,16 +41,7 @@ const Search: React.FC = () => {
 
   return (
     <div className="grid grid-rows-[3fr_5fr] p-5 h-[100vh]">
-      <div className="flex">
-        <ToastContainer
-          className={"overflow-clip"}
-          position="top-right"
-          theme="dark"
-          pauseOnHover
-          pauseOnFocusLoss
-        />
-        <SearchBar />
-      </div>
+      <SearchBar />
       <SongBlock />
     </div>
   );

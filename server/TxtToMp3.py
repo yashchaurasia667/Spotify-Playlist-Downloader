@@ -14,9 +14,9 @@ serverDownload = False
 
 
 @socketio.on('start')
-def start(name):
-  print(name)
-  emit('start', {name})
+def start(song):
+  print(song)
+  emit('start', {song})
 
 
 @socketio.on('progress')
@@ -66,12 +66,13 @@ async def download_audio(name, artist, path):
           print('Already downloaded')
           return 409
 
-        socketio.emit('start', {'name': name}, namespace='/')
+        socketio.emit('start', {'name': name, 'artist': artist}, namespace='/')
 
         dName = yt.streams.get_audio_only().download(path)
         os.rename(dName, newName)
         cprint(f"{name} => {link}", color="green")
-        socketio.emit('complete', {'complete': True}, namespace='/')
+
+        socketio.emit('complete', {'name': name}, namespace='/')
         return 200
 
       except Exception as e:
