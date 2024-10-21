@@ -91,6 +91,7 @@ def getSongs(playlist_link: str, sp=''):
       "album": pd.Series(dtype="str"),
       "release date": pd.Series(dtype="str"),
       "image": pd.Series(dtype="str"),
+      "id": pd.Series(dtype="str"),
   })
 
   tracks = playlist_dict["tracks"]
@@ -101,6 +102,7 @@ def getSongs(playlist_link: str, sp=''):
   offset = 0
 
   for i in range(no_of_songs):
+
     name = clean(items[i - offset]["track"]["name"])
     df.loc[i, "songs"] = name
 
@@ -118,6 +120,9 @@ def getSongs(playlist_link: str, sp=''):
     artists = ",".join(artists)
     df.loc[i, "artists"] = artists
 
+    id = f"id: {items[i - offset]['track']['id']}"
+    df.loc[i, "id"] = id
+
     total.append({
         'index': i + 1,
         'name': name,
@@ -125,6 +130,7 @@ def getSongs(playlist_link: str, sp=''):
         'album': album,
         'images': images[1],
         'duration': items[i - offset]['track']['duration_ms'],
+        'id': id,
     })
 
     if (i + 1) % 100 == 0:
@@ -142,7 +148,7 @@ def getSongs(playlist_link: str, sp=''):
 def search_gui(name: str, qtype='name', sp='') -> pd.DataFrame:
   try:
     if not sp:
-      connect_spotify()
+      sp = connect_spotify()
     if (qtype == 'name'):
       results = sp.search(q=name, type='track', limit=10)
       return results
@@ -200,4 +206,5 @@ except Exception as e:
   initialize_credentials()
 
 if __name__ == "__main__":
-  getSongs("https://open.spotify.com/playlist/4cr3CthlhRX7sSrXpkFrHX")
+  getSongs("https://open.spotify.com/playlist/57yrcKOe0LZnilPiP3k29L")
+  # print(search_gui('till forever falls apart', 'name')['tracks']['items'][0]['id'])

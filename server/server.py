@@ -26,6 +26,7 @@ def create_song_list(tracks):
         'album': track['album']['name'],
         'images': track['album']['images'][1]['url'],
         'duration': track['duration_ms'],
+        'id': track['id'],
     })
   return songs
 
@@ -83,7 +84,7 @@ def download():
 
   if data['song'] and data['path'] and data['qtype']:
     TxtToMp3.serverDownload = True
-    TxtToMp3.cover = data['song']['images']
+    TxtToMp3.Songid = data['song']['id']
     print('Download started')
     # socketio.emit('start', {'start': True}, namespace='/')
 

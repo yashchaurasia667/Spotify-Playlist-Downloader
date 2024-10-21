@@ -11,7 +11,7 @@ import os
 import re
 
 serverDownload = False
-cover = ''
+Songid = ''
 
 
 @socketio.on('start')
@@ -67,7 +67,7 @@ async def download_audio(name, artist, path):
           print('Already downloaded')
           return 409
 
-        socketio.emit('start', {'title': name, 'cover': cover}, namespace='/')
+        socketio.emit('start', {'title': name, 'id': Songid}, namespace='/')
 
         dName = yt.streams.get_audio_only().download(path)
         os.rename(dName, newName)
