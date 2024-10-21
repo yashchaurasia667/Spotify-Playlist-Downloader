@@ -5,12 +5,14 @@ export type Song = {
   images: string;
   index: number;
   name: string;
+  id: string;
 };
 
 export interface downloads {
   title: string;
   downloadPath: string;
   coverPath: string;
+  id: string;
   complete: boolean;
 }
 
@@ -19,5 +21,3 @@ export interface playlist {
   name: string;
   link: string;
 }
-
-

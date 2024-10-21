@@ -5,15 +5,23 @@ import { io } from "socket.io-client";
 
 import { Song } from "../types";
 
-import GlobalContext from "../context/globalContext/GlobalContext";
+import DownloadsContext from "../context/downloadsContext/DownloadsContext";
 
-const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
+const SongTile = ({
+  index,
+  images,
+  name,
+  artists,
+  album,
+  duration,
+  id,
+}: Song) => {
   const socket = io("http://localhost:5000", {
     transports: ["websocket", "polling"],
   });
 
-  const context = useContext(GlobalContext);
-  if (!context) throw new Error("No Global context");
+  const context = useContext(DownloadsContext);
+  if (!context) throw new Error("No Downloads context");
 
   const { setDownloadPath, createDownload } = context;
 
@@ -37,7 +45,7 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          song: { name, artists, images },
+          song: { name, artists, images, id },
           path,
           qtype: "name",
         }),
@@ -57,18 +65,16 @@ const SongTile = ({ index, images, name, artists, album, duration }: Song) => {
 
   useEffect(() => {
     socket.on("start", (data) => {
-      console.log("data", data.artist);
-      console.log("images", images);
-      if (data.title == name && data.artist == artists) {
+      if (data.id == id) {
         console.log("download started ", data);
-        createDownload(images, name, false);
+        createDownload(images, name, id, false);
       }
     });
 
     return () => {
       socket.off("start");
     };
-  }, [artists, images, name, socket, createDownload]);
+  }, [socket, createDownload, id, images, name]);
 
   return (
     <div className="overflow-hidden font-semibold w-[100%] h-[80px] grid grid-cols-[3fr_2fr_1fr_1fr] gap-x-8 items-center rounded-lg bg-[#242424] mt-3 px-6 py-4">

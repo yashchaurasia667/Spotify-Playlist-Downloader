@@ -14,6 +14,7 @@ import Login from "./components/Login";
 import Help from "./components/Help";
 
 import GlobalContextProvider from "./context/globalContext/GlobalContextProvider";
+import DownloadsContextProvider from "./context/downloadsContext/DownloadsContextProvider";
 
 import "./App.css";
 
@@ -23,12 +24,19 @@ function App() {
       <Route
         path="/"
         element={
-          <GlobalContextProvider>
+          <DownloadsContextProvider>
             <MainLayout />
-          </GlobalContextProvider>
+          </DownloadsContextProvider>
         }
       >
-        <Route index element={<Search />}></Route>
+        <Route
+          index
+          element={
+            <GlobalContextProvider>
+              <Search />
+            </GlobalContextProvider>
+          }
+        ></Route>
         <Route path="downloads" element={<Downloads />} />
         <Route path="login" element={<Login />} />
         <Route path="help" element={<Help />} />

@@ -1,21 +1,18 @@
-import { useState, useContext, useEffect } from "react";
+import { useContext, useEffect } from "react";
 
 import DownloadTile from "./DownloadTile";
 
-import GlobalContext from "../context/globalContext/GlobalContext";
-
-import { downloads } from "../types/index.ts";
+import DownloadsContext from "../context/downloadsContext/DownloadsContext.ts";
 
 const Downloads = () => {
-  const [downloads, setDownloads] = useState<downloads[]>([]);
-  const context = useContext(GlobalContext);
+  const downloadContext = useContext(DownloadsContext);
 
-  if (!context) throw new Error("No Global context");
+  if (!downloadContext) throw new Error("No Download Context");
 
-  const { downloading, setDownloadPath } = context;
+  const { downloading, setDownloadPath, downloads, initDownloads } =
+    downloadContext;
   useEffect(() => {
-    const dwl = localStorage.getItem("downloads");
-    if (dwl) setDownloads(JSON.parse(dwl));
+    initDownloads();
   }, []);
 
   return (

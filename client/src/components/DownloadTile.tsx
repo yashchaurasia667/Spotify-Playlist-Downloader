@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 import { FaFolder } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
+
+import { downloads } from "../types/index";
 
 interface props {
   title: string;
@@ -35,6 +37,22 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
     } catch (error) {
       console.error(`Something went wrong: ${error}`);
     }
+  };
+
+  const removeFromDownloads = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const downloads = localStorage.getItem("downloads");
+    if (downloads) {
+      const dwl = JSON.parse(downloads);
+      console.log(dwl);
+      const newDownloads = dwl.filter(
+        (download: downloads) =>
+          !(download?.title == title && download?.coverPath == coverPath)
+      );
+      localStorage.setItem("downloads", JSON.stringify(newDownloads));
+    }
+
+    console.log("download removed");
   };
 
   useEffect(() => {
@@ -79,7 +97,7 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
         >
           <FaFolder size={25} className="text-purple-300" />
         </button>
-        <button>
+        <button onClick={removeFromDownloads}>
           <RxCross2 size={25} className="text-red-400" />
         </button>
       </div>

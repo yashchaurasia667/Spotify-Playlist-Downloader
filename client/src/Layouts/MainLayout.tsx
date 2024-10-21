@@ -4,14 +4,15 @@ import { ToastContainer } from "react-toastify";
 
 import Navbar from "../components/Navbar";
 
+import DownloadsContext from "../context/downloadsContext/DownloadsContext";
+
 import { io } from "socket.io-client";
-import GlobalContext from "../context/globalContext/GlobalContext";
 
 const MainLayout = () => {
-  const context = useContext(GlobalContext);
-  if (!context) throw new Error("No Global context");
+  const context = useContext(DownloadsContext);
+  if (!context) throw new Error("No Download context");
 
-  const { downloading, setDownloading } = context;
+  const { downloading, setDownloading, downloads, initDownloads } = context;
 
   const socket = io("http://localhost:5000", {
     transports: ["websocket", "polling"],
@@ -23,27 +24,28 @@ const MainLayout = () => {
       let newDownload = undefined;
       setDownloading(
         downloading.filter((item) => {
-          if (item.title !== data.title && item.coverPath !== data.coverPath)
-            return item;
+          if (item.id == data.id) return item;
           newDownload = item;
         })
       );
+      initDownloads();
       if (newDownload) {
         newDownload.complete = true;
-        const downloads = localStorage.getItem("downloads");
+        // const downloads = localStorage.getItem("downloads");
         if (downloads) {
           localStorage.setItem(
             "downloads",
-            JSON.stringify([...JSON.parse(downloads), newDownload])
+            JSON.stringify([...downloads, newDownload])
           );
         } else localStorage.setItem("downloads", JSON.stringify([newDownload]));
+        initDownloads();
       }
     });
 
     return () => {
       socket.off("complete");
     };
-  }, [socket, downloading, setDownloading]);
+  }, [socket, downloading, setDownloading, downloads, initDownloads]);
 
   return (
     <div className="min-h-[100vh] grid grid-cols-[1.3fr_8fr]">
