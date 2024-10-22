@@ -24,14 +24,15 @@ const MainLayout = () => {
       let newDownload = undefined;
       setDownloading(
         downloading.filter((item) => {
-          if (item.id == data.id) return item;
-          newDownload = item;
+          if (item.id == data.id) {
+            console.log("id: ", item.id);
+            item.complete = true;
+            newDownload = item;
+          } else return item;
         })
       );
       initDownloads();
       if (newDownload) {
-        newDownload.complete = true;
-        // const downloads = localStorage.getItem("downloads");
         if (downloads) {
           localStorage.setItem(
             "downloads",
@@ -45,7 +46,7 @@ const MainLayout = () => {
     return () => {
       socket.off("complete");
     };
-  }, [socket, downloading, setDownloading, downloads, initDownloads]);
+  }, [downloading, downloads]);
 
   return (
     <div className="min-h-[100vh] grid grid-cols-[1.3fr_8fr]">
