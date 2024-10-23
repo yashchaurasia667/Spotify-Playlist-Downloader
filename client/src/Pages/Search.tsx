@@ -25,7 +25,6 @@ const Search: React.FC = () => {
           });
           const data = await res.json();
           if (data.success) {
-            // console.log(data);
             toast.success("Connected to Spotify", {
               style: toastStyle,
             });

@@ -16,13 +16,11 @@ Songid = ''
 
 @socketio.on('start')
 def start(song):
-  print(song)
   emit('start', {song})
 
 
 @socketio.on('progress')
 def progress(progress):
-  print(progress)
   emit("progress", {progress})
 
 
@@ -36,7 +34,7 @@ def progressBar(stream, chunk, bytes_remaning, emit_progress=None):
   bytes_downloaded = total_size - bytes_remaning
   completion = (bytes_downloaded / total_size) * 100
   socketio.emit("progress", {"completion": completion}, namespace='/')
-  # return completion
+  return completion
 
 
 async def fetch_id(name, artist, session):

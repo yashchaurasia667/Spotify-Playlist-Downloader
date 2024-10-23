@@ -16,6 +16,10 @@ const SongTile = ({
   duration,
   id,
 }: Song) => {
+  const toastStyle = {
+    backgroundColor: "#232323",
+  };
+
   const socket = io("http://localhost:5000", {
     transports: ["websocket", "polling"],
   });
@@ -53,10 +57,12 @@ const SongTile = ({
 
       const data = await res.json();
 
-      if (data.success) toast.success("Download complete");
+      if (data.success)
+        toast.success("Download complete", { style: toastStyle });
       else {
-        if (data?.status == 409) toast.error("Song already exists");
-        else toast.error("Something went wrong...");
+        if (data?.status == 409)
+          toast.error("Song already exists", { style: toastStyle });
+        else toast.error("Something went wrong...", { style: toastStyle });
       }
     } catch (error) {
       console.error(`Something went wrong while downloading the song ${error}`);
@@ -67,7 +73,7 @@ const SongTile = ({
     socket.on("start", (data) => {
       if (data.id == id) {
         console.log("download started ", data);
-        createDownload(images, name, id, false);
+        createDownload(images, name, id, "Song", false);
       }
     });
 

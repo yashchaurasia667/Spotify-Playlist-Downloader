@@ -13,6 +13,7 @@ interface DownloadsContext {
     cover: string,
     name: string,
     id: string,
+    type: "Song" | "Playlist",
     complete: boolean
   ) => void;
 }

@@ -13,6 +13,7 @@ export interface downloads {
   downloadPath: string;
   coverPath: string;
   id: string;
+  type: "Song" | "Playlist";
   complete: boolean;
 }
 

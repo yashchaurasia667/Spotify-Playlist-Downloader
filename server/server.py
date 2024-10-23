@@ -84,11 +84,11 @@ def download():
 
   if data['song'] and data['path'] and data['qtype']:
     TxtToMp3.serverDownload = True
-    TxtToMp3.Songid = data['song']['id']
     print('Download started')
     # socketio.emit('start', {'start': True}, namespace='/')
 
     if data['qtype'] == 'name':
+      TxtToMp3.Songid = data['song']['id']
       artists = ', '.join(data['song']['artists'])
       res = asyncio.run(TxtToMp3.process_singles(name=data['song']['name'], artist=artists, serverPath=data['path']))
       res = res[0]
@@ -98,6 +98,7 @@ def download():
         return jsonify(success=False, status=res, message="Something went wrong while downloading the song")
 
     elif data['qtype'] == 'playlist':
+      TxtToMp3.Songid = data['song']
       res = asyncio.run(TxtToMp3.process_playlist(link=data['song'], serverPath=data['path']))
       if res == 200:
         return jsonify(success=True, status=res, message="Playlist Downloaded")

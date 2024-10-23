@@ -10,6 +10,7 @@ import { downloads } from "../types/index";
 
 interface props {
   title: string;
+  type: "name" | "playlist";
   downloadPath: string;
   coverPath: string;
   complete: boolean;
@@ -20,7 +21,13 @@ interface style {
   gridTemplateColumns: string;
 }
 
-const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
+const DownloadTile = ({
+  title,
+  type,
+  downloadPath,
+  coverPath,
+  complete,
+}: props) => {
   const context = useContext(DownloadsContext);
   if (!context) throw new Error("No Downloads context");
 
@@ -84,6 +91,7 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
         <img src={coverPath} width={60} alt="cover" className="rounded-lg" />
         <div className="flex-grow">
           <p className="text-lg font-semibold">{title}</p>
+          <p className="text-md underline text-purple-700">{type}</p>
           {downloadComplete ? (
             ""
           ) : (

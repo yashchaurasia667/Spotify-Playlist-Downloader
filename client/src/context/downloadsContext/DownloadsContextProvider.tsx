@@ -39,23 +39,21 @@ const DownloadsContextProvider: React.FC<DownloadsContextProviderProps> = ({
     cover: string,
     name: string,
     id: string,
+    type: "Song" | "Playlist",
     complete: boolean
   ) => {
     const path = localStorage.getItem("downloadPath");
+
     const newDownload = {
       title: name,
       downloadPath: path || "c:/",
       coverPath: cover,
       id: id,
+      type: type,
       complete: complete,
     };
 
-    setDownloading((prevDownloads) => {
-      return [...prevDownloads, newDownload];
-      // const updateDownloads = [...prevDownloads, newDownload];
-      // localStorage.setItem("downloads", JSON.stringify(updateDownloads));
-      // return updateDownloads;
-    });
+    setDownloading((prevDownloads) => [...prevDownloads, newDownload]);
   };
 
   const value = {
