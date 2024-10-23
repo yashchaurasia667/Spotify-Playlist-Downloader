@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useMemo } from "react";
 
 import DownloadTile from "./DownloadTile";
 
@@ -11,6 +11,18 @@ const Downloads = () => {
 
   const { downloading, setDownloadPath, downloads, initDownloads } =
     downloadContext;
+
+  const inProgress = useMemo(() => {
+    return downloading.map((title, index) => (
+      <DownloadTile key={index} {...title} />
+    ));
+  }, [downloading]);
+  const completed = useMemo(() => {
+    return downloads.map((tile, index) => (
+      <DownloadTile key={index} {...tile} />
+    ));
+  }, [downloads]);
+
   useEffect(() => {
     initDownloads();
   }, []);
@@ -27,12 +39,8 @@ const Downloads = () => {
         </button>
       </div>
       <div className="mt-20 flex flex-col gap-y-4">
-        {downloading.map((title, index) => (
-          <DownloadTile key={index} {...title} />
-        ))}
-        {downloads.map((tile, index) => (
-          <DownloadTile key={index} {...tile} />
-        ))}
+        {inProgress}
+        {completed}
       </div>
     </div>
   );

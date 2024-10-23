@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
 import { FaFolder } from "react-icons/fa";
 import { RxCross2 } from "react-icons/rx";
+
+import DownloadsContext from "../context/downloadsContext/DownloadsContext";
 
 import { downloads } from "../types/index";
 
@@ -19,6 +21,11 @@ interface style {
 }
 
 const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
+  const context = useContext(DownloadsContext);
+  if (!context) throw new Error("No Downloads context");
+
+  const { initDownloads } = context;
+
   const socket = io("http://localhost:5000", {
     transports: ["websocket", "polling"],
   });
@@ -51,6 +58,7 @@ const DownloadTile = ({ title, downloadPath, coverPath, complete }: props) => {
       );
       localStorage.setItem("downloads", JSON.stringify(newDownloads));
     }
+    initDownloads();
 
     console.log("download removed");
   };
