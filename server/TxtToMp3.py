@@ -73,7 +73,7 @@ async def download_audio(name, artist, path):
         os.rename(dName, newName)
         cprint(f"{name} => {link}", color="green")
 
-        socketio.emit('complete', {'title': name}, namespace='/')
+        socketio.emit('complete', {'id': Songid}, namespace='/')
         return 200
 
       except Exception as e:
