@@ -58,7 +58,7 @@ def connect_spotify(id='', secret=''):
       initialize_credentials()
     auth_manager = SpotifyClientCredentials(client_id=id or CLIENT_ID, client_secret=secret or CLIENT_SECRET)
     sp = spotipy.Spotify(auth_manager=auth_manager)
-    test_playlist = sp.playlist("37i9dQZF1DXcBWIGoYBM5M")
+    test_playlist = sp.playlist("4tFABTdqmqEBGWptJ4Khgl")
 
     if not test_playlist:
       raise Exception("Could not connect to spotify")

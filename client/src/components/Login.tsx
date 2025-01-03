@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const inputClass =
@@ -9,14 +10,20 @@ const Login = () => {
   const [id, setId] = useState<string>("");
   const [secret, setSecret] = useState<string>("");
 
+  const toastStyle = {
+    backgroundColor: "#232323",
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (id != "" && secret != "")
       try {
         localStorage.setItem("credentials", JSON.stringify({ id, secret }));
-        console.log("Credentials set");
+        toast.success("Credentials set");
+        console.log("Credentials set", { style: toastStyle });
       } catch (error) {
         console.error(`Something went wrong while logging in: ${error}`);
+        toast.error("Failed to set Credentials", { style: toastStyle });
       }
   };
 
